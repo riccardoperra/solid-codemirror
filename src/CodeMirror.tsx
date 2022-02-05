@@ -1,7 +1,7 @@
-import { Component, createEffect, mergeProps, onCleanup, splitProps } from 'solid-js';
-import { Extension } from '@codemirror/state';
-import { CodeMirrorComponentProps } from './types/codeMirrorProps';
-import { createCodeMirror } from './createCodeMirror';
+import {Component, createEffect, mergeProps, onCleanup, splitProps} from 'solid-js';
+import {Extension} from '@codemirror/state';
+import {CodeMirrorComponentProps} from './types/codeMirrorProps';
+import {createCodeMirror} from './createCodeMirror';
 
 export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
   const [pickedProps, others] = splitProps(props, [
@@ -44,19 +44,19 @@ export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
 
   let editor!: HTMLDivElement;
 
-  const { view, setProps, setContainer } = createCodeMirror({
+  const {view, setOptions, setContainer} = createCodeMirror({
     container: editor,
     ...computedProps
   });
 
   createEffect(() => setContainer(editor));
-  createEffect(() => setProps(computedProps as any));
+  createEffect(() => setOptions(computedProps as any));
   onCleanup(() => view()?.destroy());
 
   return (
     <div
       ref={editor}
-      class={`solid-cm' ${
+      class={`solid-cm ${
         pickedProps.className ? ` ${pickedProps.className}` : ''
       }`}
       {...others}

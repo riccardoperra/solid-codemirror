@@ -2,11 +2,11 @@ import { fireEvent, render, screen } from 'solid-testing-library';
 import { CodeMirror } from '../src/CodeMirror';
 
 it('CodeMirror', async () => {
-  await render(() => (<CodeMirror placeholder='test1' />));
-  const cm = await screen.findByPlaceholderText('test1');
+  const {baseElement} = render(() => <CodeMirror />);
+  const cm = baseElement.firstChild.firstChild;
   expect(cm).toBeTruthy();
   expect(cm).toBeInTheDOM();
-  expect(cm.classList.contains('solid-cm')).toBeTruthy();
+  expect((cm as Element).classList.contains('solid-cm')).toBeTruthy();
 });
 
 it('CodeMirror onChange', async () => {
