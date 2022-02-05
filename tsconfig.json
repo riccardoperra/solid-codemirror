@@ -9,6 +9,7 @@
     "jsx": "preserve",
     "types": ["vite/client"],
     "baseUrl": "./",
+    "declaration": true,
     "paths": {
       "~/*": ["./src/*"]
     }
