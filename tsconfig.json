@@ -9,6 +9,8 @@
     "jsx": "preserve",
     "types": ["vite/client"],
     "baseUrl": "./",
-    "declaration": true
+    "declaration": true,
+    "sourceMap": true,
+    "importHelpers": true
   }
 }

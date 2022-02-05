@@ -1,7 +1,7 @@
 import {Component, createEffect, onCleanup} from 'solid-js';
-import {CodeMirrorComponentProps} from './types/codeMirrorProps';
 import {createCodeMirror} from './createCodeMirror';
 import {extractCodeMirrorProps} from "./utils/extractCodeMirrorProps";
+import {CodeMirrorComponentProps} from "./types/codeMirrorProps";
 
 export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
   let editor!: HTMLDivElement;
