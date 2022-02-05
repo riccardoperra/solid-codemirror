@@ -18,11 +18,6 @@ export interface CodeMirrorComponentProps
   /** Enables a placeholder—a piece of example content to show when the editor is empty. */
   placeholder?: string | HTMLElement;
   /**
-   * `light` / `dark` / `Extension` Defaults to `light`.
-   * @default light
-   */
-  theme?: 'light' | 'dark' | Extension;
-  /**
    * Whether to optional basicSetup by default
    * @default true
    */

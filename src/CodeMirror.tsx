@@ -11,7 +11,6 @@ export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
     'onChange',
     'onUpdate',
     'autoFocus',
-    'theme',
     'height',
     'minHeight',
     'maxHeight',
@@ -21,13 +20,12 @@ export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
     'basicSetup',
     'placeholder',
     'editable',
-    'root'
+    'root',
   ]);
 
   const computedProps = mergeProps(
     {
       extensions: [] as Extension[],
-      theme: 'light',
       height: '',
       minHeight: '',
       maxHeight: '',
