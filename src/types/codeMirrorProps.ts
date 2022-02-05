@@ -1,21 +1,49 @@
-import { EditorStateConfig, Extension } from '@codemirror/state';
-import { ViewUpdate } from '@codemirror/view';
-import { JSX } from 'solid-js';
+import {EditorStateConfig, Extension} from '@codemirror/state';
+import {ViewUpdate} from '@codemirror/view';
+import {JSX} from 'solid-js';
 
-export interface CodeMirrorComponentProps
-  extends Omit<EditorStateConfig, 'doc' | 'extensions'>,
-    Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange' | 'placeholder'> {
-  /** value of the auto created model in the editor. */
+export interface CodeMirrorComponentProps extends Omit<EditorStateConfig, 'doc' | 'extensions'>, Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange' | 'placeholder'> {
+  /**
+   * value of the auto created model in the editor.
+   */
   value?: string;
+  /**
+   * CodeMirror host container height
+   * @default auto
+   */
   height?: string;
+  /**
+   * CodeMirror host container minHeight
+   * @default 0px
+   */
   minHeight?: string;
+  /**
+   * CodeMirror host container maxHeight
+   * @default auto
+   */
   maxHeight?: string;
+  /**
+   * CodeMirror host container width
+   * @default auto
+   */
   width?: string;
+  /**
+   * CodeMirror host Container minWidth
+   * @default 0px
+   */
   minWidth?: string;
+  /**
+   * CodeMirror host Container max width
+   * @default none
+   */
   maxWidth?: string;
-  /** focus on the editor. */
+  /**
+   * focus on the editor.
+   */
   autoFocus?: boolean;
-  /** Enables a placeholder—a piece of example content to show when the editor is empty. */
+  /**
+   * Enables a placeholder—a piece of example content to show when the editor is empty.
+   */
   placeholder?: string | HTMLElement;
   /**
    * Whether to optional basicSetup by default
@@ -33,10 +61,14 @@ export interface CodeMirrorComponentProps
    */
   indentWithTab?: boolean;
 
-  /** Fired whenever a change occurs to the document. */
+  /**
+   * Fired whenever a change occurs to the document.
+   * */
   onChange?(value: string, viewUpdate: ViewUpdate): void;
 
-  /** Fired whenever a change occurs to the document. There is a certain difference with `onChange`. */
+  /**
+   * Fired whenever a change occurs to the document. There is a certain difference with `onChange`.
+   * */
   onUpdate?(viewUpdate: ViewUpdate): void;
 
   /**
