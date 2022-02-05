@@ -1,7 +1,2 @@
-export interface Test {
-  property: string;
-}
-
-export const test = (): Test => ({
-  property: 'test',
-});
+export {CodeMirror} from './CodeMirror';
+export {createCodeMirror, CodeMirrorOptions} from './createCodeMirror';
