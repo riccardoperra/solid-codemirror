@@ -1,17 +1,17 @@
-import { EditorState, Extension, SelectionRange, StateEffect } from '@codemirror/state';
-import { basicSetup as defaultBasicSetup } from '@codemirror/basic-setup';
-import { EditorView, keymap, placeholder as extendPlaceholder, ViewUpdate } from '@codemirror/view';
-import { indentWithTab as defaultIndentWithTab } from '@codemirror/commands';
-import { createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js';
-import { createStore } from 'solid-js/store';
-import { CodeMirrorComponentProps } from './types/codeMirrorProps';
+import {EditorState, Extension, SelectionRange, StateEffect} from '@codemirror/state';
+import {basicSetup as defaultBasicSetup} from '@codemirror/basic-setup';
+import {EditorView, keymap, placeholder as extendPlaceholder, ViewUpdate} from '@codemirror/view';
+import {indentWithTab as defaultIndentWithTab} from '@codemirror/commands';
+import {createEffect, createMemo, createSignal, on, onCleanup} from 'solid-js';
+import {createStore} from 'solid-js/store';
+import {CodeMirrorComponentProps} from './types/codeMirrorProps';
 
-export interface UseCodeMirrorOptions extends CodeMirrorComponentProps {
+export interface CodeMirrorOptions extends CodeMirrorComponentProps {
   container?: HTMLDivElement | null;
 }
 
-export function createCodeMirror(initialOptions: UseCodeMirrorOptions) {
-  const [options, setOptions] = createStore<UseCodeMirrorOptions>(initialOptions);
+export function createCodeMirror(initialOptions: CodeMirrorOptions) {
+  const [options, setOptions] = createStore<CodeMirrorOptions>(initialOptions);
   const [container, setContainer] = createSignal();
   const [view, setView] = createSignal<EditorView>();
   const [state, setState] = createSignal<EditorState>();
@@ -52,7 +52,7 @@ export function createCodeMirror(initialOptions: UseCodeMirrorOptions) {
     if (options.onUpdate && typeof options.onUpdate === 'function') {
       getExtensions.push(EditorView.updateListener.of(options.onUpdate));
     }
-    getExtensions = getExtensions.concat(((options as unknown as UseCodeMirrorOptions).extensions) || []);
+    getExtensions = getExtensions.concat(((options as unknown as CodeMirrorOptions).extensions) || []);
     return getExtensions;
   }, options);
 
@@ -93,11 +93,10 @@ export function createCodeMirror(initialOptions: UseCodeMirrorOptions) {
   });
 
   createEffect(
-    on(computedExtensions, () => {
-      return view()?.dispatch({
+    on(computedExtensions, () => view()?.dispatch({
         effects: StateEffect.reconfigure.of(computedExtensions())
-      });
-    })
+      })
+    )
   );
 
   createEffect(() => {
@@ -107,13 +106,13 @@ export function createCodeMirror(initialOptions: UseCodeMirrorOptions) {
   });
 
   return {
-    props: options,
-    setProps: setOptions,
+    options,
+    setOptions,
     state,
     setState,
     view,
     setView,
-    container,
-    setContainer
+      container,
+      setContainer
   };
 }
