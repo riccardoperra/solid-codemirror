@@ -60,6 +60,13 @@
     "vite": "^2.7.13",
     "vite-tsconfig-paths": "^3.3.17"
   },
+  "peerDependencies": {
+    "@codemirror/basic-setup": "^0.19.1",
+    "@codemirror/commands": "^0.19.8",
+    "@codemirror/state": "^0.19.6",
+    "@codemirror/view": "^0.19.41",
+    "solid-js": "^1.0.0"
+  },
   "engines": {
     "node": ">=14"
   },
