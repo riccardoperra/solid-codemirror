@@ -21,29 +21,40 @@
     "build": "rimraf dist && vite build",
     "build:release": "pnpm build && cp package.json dist",
     "lint": "eslint . --ext .js,.jsx,.mjs,.ts,.tsx",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "test": "jest"
   },
   "type": "module",
   "devDependencies": {
+    "@babel/core": "^7.17.0",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-typescript": "^7.16.7",
     "@commitlint/cli": "14.1.0",
     "@commitlint/config-angular": "14.1.0",
     "@commitlint/config-conventional": "14.1.0",
     "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@types/jest": "^27.4.0",
     "@typescript-eslint/eslint-plugin": "^5.10.2",
     "@typescript-eslint/parser": "^5.10.2",
+    "babel-preset-solid": "^1.3.5",
     "eslint": "^8.8.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.25.4",
     "husky": "^7.0.4",
+    "jest": "^27.5.0",
     "lint-staged": "^12.1.4",
     "prettier": "^2.0.5",
     "rimraf": "^3.0.2",
     "rollup-plugin-ts": "^2.0.5",
     "semantic-release": "^19.0.2",
+    "solid-jest": "^0.2.0",
     "solid-js": "^1.3.4",
     "solid-start": "next",
     "solid-start-node": "next",
+    "solid-testing-library": "^0.2.1",
+    "ts-jest": "^27.1.3",
     "typescript": "^4.4.3",
     "vite": "^2.7.13",
     "vite-tsconfig-paths": "^3.3.17"
@@ -52,11 +63,11 @@
     "node": ">=14"
   },
   "dependencies": {
-    "solid-js": "^1.3.4",
-    "@codemirror/view": "^0.19.41",
-    "@codemirror/state": "^0.19.6",
+    "@codemirror/basic-setup": "^0.19.1",
     "@codemirror/commands": "^0.19.8",
-    "@codemirror/basic-setup": "^0.19.1"
+    "@codemirror/state": "^0.19.6",
+    "@codemirror/view": "^0.19.41",
+    "solid-js": "^1.3.4"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",
