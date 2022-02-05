@@ -44,7 +44,7 @@ export function createCodeMirror(initialOptions: CodeMirrorOptions) {
       indentWithTab ? keymap.of([defaultIndentWithTab]) : null,
       basicSetup ? defaultBasicSetup : null,
       placeholder && extendPlaceholder ? extendPlaceholder(placeholder) : null,
-      editable ? EditorView.editable.of(false) : null,
+      !editable ? EditorView.editable.of(false) : null,
       !!onUpdate && typeof onUpdate === 'function' ? EditorView.updateListener.of(onUpdate) : null,
       updateListener,
       defaultThemeOption,
