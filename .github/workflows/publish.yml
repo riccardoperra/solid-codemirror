@@ -3,7 +3,6 @@ name: Publish the library
 on:
   push:
     branches:
-      - main
       - beta
 
 jobs:

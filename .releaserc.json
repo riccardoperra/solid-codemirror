@@ -1,7 +1,11 @@
 {
   "preset": "angular",
   "branches": [
-    "main"
+    "main",
+    {
+      "name": "alpha",
+      "prerelease": true
+    }
   ],
   "plugins": [
     "@semantic-release/commit-analyzer",
