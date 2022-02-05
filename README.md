@@ -51,7 +51,7 @@ export const App = () => {
 ## With `createCodeMirror`
 
 ```tsx
-import {createEffect, useRef} from 'solid-js';
+import {createEffect} from 'solid-js';
 import {createCodeMirror} from 'solid-codemirror';
 import {javascript} from '@codemirror/lang-javascript';
 
