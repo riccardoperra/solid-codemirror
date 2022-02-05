@@ -1,4 +1,4 @@
-# react-codemirror
+# solid-codemirror
 
 [![NPM Downloads](https://img.shields.io/npm/dw/solid-codemirror?style=flat)](https://www.npmjs.com/package/riccardoperra/solid-codemirror)
 [![npm version](https://img.shields.io/npm/v/solid-codemirror)](https://www.npmjs.com/package/riccardoperra/solid-codemirror)
