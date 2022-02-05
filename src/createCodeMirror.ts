@@ -4,7 +4,7 @@ import { EditorView, keymap, placeholder as extendPlaceholder, ViewUpdate } from
 import { indentWithTab as defaultIndentWithTab } from '@codemirror/commands';
 import { createEffect, createMemo, createSignal, on, onCleanup } from 'solid-js';
 import { createStore } from 'solid-js/store';
-import { CodeMirrorComponentProps } from '~/types/codeMirrorProps';
+import { CodeMirrorComponentProps } from './types/codeMirrorProps';
 
 export interface UseCodeMirrorOptions extends CodeMirrorComponentProps {
   container?: HTMLDivElement | null;
@@ -44,7 +44,7 @@ export function createCodeMirror(initialOptions: UseCodeMirrorOptions) {
       getExtensions.unshift(defaultBasicSetup);
     }
     if (options.placeholder && extendPlaceholder) {
-      getExtensions.unshift(extendPlaceholder(options.placeholder));
+      getExtensions.unshift(extendPlaceholder(options.placeholder as string | HTMLElement));
     }
     if (!options.editable) {
       getExtensions.push(EditorView.editable.of(false));
@@ -52,7 +52,7 @@ export function createCodeMirror(initialOptions: UseCodeMirrorOptions) {
     if (options.onUpdate && typeof options.onUpdate === 'function') {
       getExtensions.push(EditorView.updateListener.of(options.onUpdate));
     }
-    getExtensions = getExtensions.concat(options.extensions || []);
+    getExtensions = getExtensions.concat(((options as unknown as UseCodeMirrorOptions).extensions) || []);
     return getExtensions;
   }, options);
 

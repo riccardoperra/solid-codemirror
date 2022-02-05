@@ -1,7 +1,7 @@
 import { Component, createEffect, mergeProps, onCleanup, splitProps } from 'solid-js';
 import { Extension } from '@codemirror/state';
-import { CodeMirrorComponentProps } from '~/types/codeMirrorProps';
-import { createCodeMirror } from '~/createCodeMirror';
+import { CodeMirrorComponentProps } from './types/codeMirrorProps';
+import { createCodeMirror } from './createCodeMirror';
 
 export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
   const [pickedProps, others] = splitProps(props, [
@@ -50,15 +50,13 @@ export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
   });
 
   createEffect(() => setContainer(editor));
-  createEffect(() => setProps(computedProps));
+  createEffect(() => setProps(computedProps as any));
   onCleanup(() => view()?.destroy());
-
-  const defaultClassNames = `cm-theme-${pickedProps.theme}`;
 
   return (
     <div
       ref={editor}
-      class={`${defaultClassNames}${
+      class={`solid-cm' ${
         pickedProps.className ? ` ${pickedProps.className}` : ''
       }`}
       {...others}
