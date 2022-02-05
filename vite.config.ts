@@ -18,7 +18,15 @@ export default defineConfig({
       ]
     },
     rollupOptions: {
-      external: ["solid-js"],
+      external: [
+        "solid-js",
+        'solid-js/web',
+        'solid-js/store',
+        '@codemirror/state',
+        '@codemirror/view',
+        '@codemirror/commands',
+        '@codemirror/basic-setup',
+      ],
       output: {
         globals: {
           "solid-js": "SolidJS"
