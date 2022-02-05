@@ -5,7 +5,6 @@ it('CodeMirror', async () => {
   const {baseElement} = render(() => <CodeMirror />);
   const cm = baseElement.firstChild.firstChild;
   expect(cm).toBeTruthy();
-  expect(cm).toBeInTheDOM();
   expect((cm as Element).classList.contains('solid-cm')).toBeTruthy();
 });
 
