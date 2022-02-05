@@ -1,7 +1,7 @@
 # react-codemirror
 
 [![NPM Downloads](https://img.shields.io/npm/dw/solid-codemirror?style=flat)](https://www.npmjs.com/package/riccardoperra/solid-codemirror)
-[![npm version](https://img.shields.io/npm/v/solid-codemirror)](https://www.npmjs.com/package/@riccardoperra/solid-codemirror)
+[![npm version](https://img.shields.io/npm/v/solid-codemirror)](https://www.npmjs.com/package/riccardoperra/solid-codemirror)
 
 CodeMirror component for [SolidJS](https://github.com/solidjs/solid). Porting from [react-codemirror](https://github.com/uiwjs/react-codemirror)
 
