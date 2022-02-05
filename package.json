@@ -72,8 +72,5 @@
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",
     "*.{js,css,json,md,jsx,yml,yaml}": "prettier --ignore-path .gitignore --write"
-  },
-  "publishConfig": {
-    "access": "restricted"
   }
 }
