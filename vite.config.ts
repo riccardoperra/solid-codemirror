@@ -1,21 +1,14 @@
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import solid from "solid-start";
 import * as path from "path";
-import * as url from "url";
 import tsconfigPaths from "vite-tsconfig-paths";
-import ts from "rollup-plugin-ts";
 
 export default defineConfig({
   build: {
     lib: {
-      entry: path.resolve(path.dirname(url.fileURLToPath(import.meta.url)), "src/index.ts"),
-      name: "solid-codemirror",
-      fileName: (format: string) => `solid-codemirror.${format}.js`,
-      formats: [
-        "es",
-        "umd",
-        "cjs"
-      ]
+      entry: path.resolve(__dirname, 'src/public-api.ts'),
+      fileName: () => `solid-codemirror.mjs`,
+      formats: ["es"]
     },
     rollupOptions: {
       external: [
@@ -29,10 +22,16 @@ export default defineConfig({
       ],
       output: {
         globals: {
-          "solid-js": "SolidJS"
+          "solid-js": "SolidJS",
+          "solid-js/web": "SolidJs/web",
+          "solid-js/store": "SolidJs/store",
+          '@codemirror/state': "@codemirror/state",
+          '@codemirror/view': "@codemirror/view",
+          '@codemirror/commands': "@codemirror/commands'",
+          '@codemirror/basic-setup': "@codemirror/basic-setup"
         }
       }
     }
   },
-  plugins: [solid(), tsconfigPaths(), ts({ transpileOnly: true })]
+  plugins: [solid(), tsconfigPaths()]
 });

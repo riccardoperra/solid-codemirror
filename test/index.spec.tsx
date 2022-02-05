@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from 'solid-testing-library';
-import { CodeMirror } from '../src/CodeMirror';
+import { CodeMirror } from '../src/lib/CodeMirror';
 
 it('CodeMirror', async () => {
   const {baseElement} = render(() => <CodeMirror />);
