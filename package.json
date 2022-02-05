@@ -1,5 +1,5 @@
 {
-  "name": "@riccardoperra/solid-codemirror",
+  "name": "solid-codemirror",
   "version": "0.0.0-development",
   "source": "./src/index.ts",
   "main": "./dist/solid-codemirror.umd.js",
@@ -19,7 +19,7 @@
   ],
   "scripts": {
     "build": "rimraf dist && vite build",
-    "build:release": "pnpm build && cp package.json dist",
+    "build:release": "npm run build && node scripts/release.js",
     "lint": "eslint . --ext .js,.jsx,.mjs,.ts,.tsx",
     "semantic-release": "semantic-release",
     "test": "jest"
@@ -72,8 +72,5 @@
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",
     "*.{js,css,json,md,jsx,yml,yaml}": "prettier --ignore-path .gitignore --write"
-  },
-  "publishConfig": {
-    "access": "restricted"
   }
 }
