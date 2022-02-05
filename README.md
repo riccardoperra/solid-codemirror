@@ -1,32 +1,108 @@
-# SolidStart
+# react-codemirror
 
-Everything you need to build a Solid project, powered by [`solid-start`](https://github.com/ryansolid/solid-start/tree/master/packages/solid-start);
+[![NPM Downloads](https://img.shields.io/npm/dw/solid-codemirror?style=flat)](https://www.npmjs.com/package/riccardoperra/solid-codemirror)
+[![npm version](https://img.shields.io/npm/v/solid-codemirror)](https://www.npmjs.com/package/@riccardoperra/solid-codemirror)
 
-## Creating a project
+CodeMirror component for [SolidJS](https://github.com/solidjs/solid). Porting from [react-codemirror](https://github.com/uiwjs/react-codemirror)
 
-```bash
-# create a new project in the current directory
-npm init solid@next
+**Features:**
 
-# create a new project in my-app
-npm init solid@next my-app
+✅ Quickly and easily configure the API. \
+✅ Uses [codemirror 6](https://codemirror.net/6/) \
+✅ Written in TypeScript.
+
+## Install
+
+- npm
+  ```bash
+  npm install solid-codemirror --save
+  ```
+
+- pnpm
+  ```bash
+  pnpm install solid-codemirror --save
+  ```
+
+- yarn
+  ```bash
+  yarn install solid-codemirror --save
+  ```
+
+## Usage
+
+```tsx
+import {CodeMirror} from 'solid-codemirror';
+import {javascript} from '@codemirror/lang-javascript';
+
+export const App = () => {
+  return (
+    <CodeMirror
+      value="console.log('hello world!');"
+      height="200px"
+      extensions={[javascript({jsx: true})]}
+      onChange={(value, viewUpdate) => {
+        console.log('value:', value);
+      }}
+    />
+  );
+}
 ```
 
-> Note: the `@next` is temporary
+## With `createCodeMirror`
 
-## Developing
+```tsx
+import {createEffect} from 'solid-js';
+import {createCodeMirror} from 'solid-codemirror';
+import {javascript} from '@codemirror/lang-javascript';
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+const code = "console.log('hello world!')";
 
-```bash
-npm run dev
+export const App = () => {
+  let editor: HTMLDivElement;
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+  const {
+    options,
+    setOptions,
+    state,
+    setState,
+    view,
+    setView
+  } = useCodeMirror({
+    container: editor.current,
+    extensions: [javascript()],
+    value: code,
+  });
+
+  createEffect(() => setContainer(editor))
+
+  return <div ref={editor}/>;
+}
 ```
 
-## Building
+## Using component / custom theme
 
-Solid apps are built with _adapters_, which optimise your project for deployment to different environments.
+```jsx
+import {CodeMirror} from "solid-codemirror";
+import {oneDark} from '@codemirror/theme-one-dark';
+import {javascript} from '@codemirror/lang-javascript';
 
-By default, `npm run build` will generate a Node app that you can run with `node build`. To use a different adapter, add it to the `devDependencies` in `package.json` and specify in your `vite.config.js`.
+export const App = () => {
+  return (
+    <CodeMirror
+      value="console.log('hello world!');"
+      height="100%"
+      extensions={[
+        oneDark(),
+        javascript({jsx: true})
+      ]}
+      onChange={(value, viewUpdate) => {
+        console.log('value:', value);
+      }}
+    />
+  );
+}
+```
+
+## License
+
+Licensed under the MIT License.
