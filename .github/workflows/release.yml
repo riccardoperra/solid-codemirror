@@ -4,10 +4,14 @@ on:
   push:
     branches:
       - main
+      - beta
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment:
+      name: release
+      url: https://github.com/riccardoperra/solid-codemirror
     env:
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
@@ -33,3 +37,8 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+
+concurrency:
+  group: release-${{ github.head_ref }}
+  cancel-in-progress: true

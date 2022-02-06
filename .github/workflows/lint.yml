@@ -1,17 +1,23 @@
-name: Build and test
+name: Test
 
 on:
   push:
-
-env:
-  IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - '.eslintrc.cjs'
+      - 'tsconfig*'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'test/**'
+      - '.eslintrc.cjs'
+      - 'tsconfig*'
 
 jobs:
-  build:
+  test:
+    name: Jest
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
     steps:
       - uses: actions/checkout@v2
@@ -23,10 +29,8 @@ jobs:
       - name: NPM install, lint, build, test
         run: |
           npm i
-          npm run lint
-          npm run build:release
           npm run test
 
 concurrency:
-  group: build-${{ github.head_ref }}
+  group: lint-${{ github.head_ref }}
   cancel-in-progress: true
