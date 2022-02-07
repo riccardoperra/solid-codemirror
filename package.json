@@ -1,6 +1,18 @@
 {
   "name": "solid-codemirror",
   "version": "1.0.0",
+  "description": "CodeMirror component for SolidJS",
+  "keywords": [
+    "solidjs",
+    "solid-js",
+    "codemirror",
+    "codemirror6",
+    "ide",
+    "solid-codemirror",
+    "editor",
+    "syntax",
+    "code"
+  ],
   "source": "./src/public-api.ts",
   "module": "./dist/solid-codemirror.mjs",
   "types": "./dist/public-api.d.ts",
