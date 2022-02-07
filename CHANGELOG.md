@@ -1,4 +1,11 @@
-# 1.0.0-beta.1 (2022-02-06)
+## [1.0.1](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.0...v1.0.1) (2022-02-06)
+
+
+### Bug Fixes
+
+* revert package.json version (for release) ([76d3625](https://github.com/riccardoperra/solid-codemirror/commit/76d36252e701b56640d50cb0502a3cfef3d4e999))
+
+# 1.0.0 (2022-02-06)
 
 
 ### Bug Fixes
