@@ -2,6 +2,27 @@
   "name": "solid-codemirror",
   "version": "1.0.0",
   "description": "CodeMirror component for SolidJS",
+  "module": "./solid-codemirror.mjs",
+  "types": "./public-api.d.ts",
+  "exports": {
+    ".": {
+      "import": "./solid-codemirror.mjs",
+      "types": "./public-api.d.ts"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/riccardoperra/solid-codemirror.git"
+  },
+  "scripts": {
+    "build": "rimraf dist && vite build && npm run build:types",
+    "build:release": "npm run build && node scripts/prepareBuild.js",
+    "build:types": "tsc -p tsconfig.dts.json",
+    "lint": "eslint . --ext .js,.jsx,.mjs,.ts,.tsx",
+    "semantic-release": "semantic-release",
+    "test": "jest"
+  },
   "keywords": [
     "solidjs",
     "solid-js",
@@ -13,31 +34,6 @@
     "syntax",
     "code"
   ],
-  "source": "./src/public-api.ts",
-  "module": "./dist/solid-codemirror.mjs",
-  "types": "./dist/public-api.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/solid-codemirror.mjs",
-      "types": "./dist/public-api.d.ts"
-    }
-  },
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/riccardoperra/solid-codemirror.git"
-  },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "build": "rimraf dist && vite build && npm run build:types",
-    "build:release": "npm run build && node scripts/release.js",
-    "build:types": "tsc -p tsconfig.dts.json",
-    "lint": "eslint . --ext .js,.jsx,.mjs,.ts,.tsx",
-    "semantic-release": "semantic-release",
-    "test": "jest"
-  },
   "type": "module",
   "devDependencies": {
     "@babel/core": "^7.17.0",
