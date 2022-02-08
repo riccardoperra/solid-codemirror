@@ -33,33 +33,32 @@ These libraries are flagged as peerDependencies, they will be bundled automatica
 
 1. Install the dependencies
 
-    ```sh
-    # pnpm
-    > pnpm add @codemirror/state @codemirror/view solid-codemirror
-    # or yarn
-    > yarn add @codemirror/state @codemirror/view solid-codemirror
-    # or npm
-    > npm i @codemirror/state @codemirror/view solid-codemirror
-    ```
+```sh
+# pnpm
+> pnpm add @codemirror/state @codemirror/view solid-codemirror
+# or yarn
+> yarn add @codemirror/state @codemirror/view solid-codemirror
+# or npm
+> npm i @codemirror/state @codemirror/view solid-codemirror
+```
 
 2. Declare `CodeMirror` component in your template.
-    ```tsx
-    import {CodeMirror} from 'solid-codemirror';
-    import {createSignal} from 'solid-js';
-  
-    export const App = () => {
-      const [value, setValue] = createSignal("console.log('hello world!')");
+```tsx
+import {CodeMirror} from 'solid-codemirror';
+import {createSignal} from 'solid-js';
 
-      return (
-        <CodeMirror
-          value={value}
-          height="200px"
-          basicSetup={true}
-          onChange={(value, viewUpdate) => setValue(value)}
-        />
-      );
-    }
-    ```
+export const App = () => {
+  const [value, setValue] = createSignal("console.log('hello world!')");
+  return (
+    <CodeMirror
+      value={value}
+      height="200px"
+      basicSetup={true}
+      onChange={(value, viewUpdate) => setValue(value)}
+    />
+  );
+}
+```
 
 ## Usage with hooks
 If you need a custom `CodeMirror` component, or you need more control, you can use the `createCodeMirror` hook. 
