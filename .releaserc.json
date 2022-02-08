@@ -8,14 +8,14 @@
     [
       "@semantic-release/npm",
       {
-        "pkgRoot": "./dist"
+        "pkgRoot": "./packages/solid-codemirror/dist"
       }
     ],
     [
       "@semantic-release/github",
       {
         "assets": [
-          "dist/*.tgz"
+          "packages/solid-codemirror/dist/*.tgz"
         ]
       }
     ],

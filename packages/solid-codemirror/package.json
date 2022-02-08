@@ -15,12 +15,6 @@
     "type": "git",
     "url": "https://github.com/riccardoperra/solid-codemirror.git"
   },
-  "scripts": {
-    "build:release": "pnpm --filter=solid-codemirror build && node scripts/prepareBuild.js",
-    "lint": "eslint . --ext .js,.jsx,.mjs,.ts,.tsx",
-    "semantic-release": "semantic-release",
-    "test": "jest"
-  },
   "keywords": [
     "solidjs",
     "solid-js",
