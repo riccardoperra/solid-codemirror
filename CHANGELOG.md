@@ -1,3 +1,10 @@
+## [1.0.3](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.2...v1.0.3) (2022-05-04)
+
+
+### Bug Fixes
+
+* remove basic setup ([977bba8](https://github.com/riccardoperra/solid-codemirror/commit/977bba8654a737ccb3d7ec9cecf8d9d516dfd9c7))
+
 ## [1.0.2](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.1...v1.0.2) (2022-02-07)
 
 
