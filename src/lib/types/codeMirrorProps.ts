@@ -46,11 +46,6 @@ export interface CodeMirrorComponentProps extends Omit<EditorStateConfig, 'doc' 
    */
   placeholder?: string | HTMLElement;
   /**
-   * Whether to optional basicSetup by default
-   * @default true
-   */
-  basicSetup?: boolean;
-  /**
    * This disables editing of the editor content by the user.
    * @default true
    */

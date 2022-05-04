@@ -22,7 +22,6 @@ export const extractCodeMirrorProps = (
     'width',
     'minWidth',
     'maxWidth',
-    'basicSetup',
     'placeholder',
     'editable',
     'root',

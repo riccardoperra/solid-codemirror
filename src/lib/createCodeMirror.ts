@@ -1,5 +1,4 @@
 import {EditorState, SelectionRange, StateEffect} from '@codemirror/state';
-import {basicSetup as defaultBasicSetup} from '@codemirror/basic-setup';
 import {EditorView, keymap, placeholder as extendPlaceholder} from '@codemirror/view';
 import {indentWithTab as defaultIndentWithTab} from '@codemirror/commands';
 import {createEffect, createMemo, createSignal, on, onCleanup} from 'solid-js';
@@ -31,7 +30,6 @@ export function createCodeMirror(initialOptions: CodeMirrorOptions) {
   const computedExtensions = createMemo(() => {
     const {
       indentWithTab,
-      basicSetup,
       placeholder,
       editable,
       onUpdate,
@@ -42,7 +40,6 @@ export function createCodeMirror(initialOptions: CodeMirrorOptions) {
 
     return [
       indentWithTab ? keymap.of([defaultIndentWithTab]) : null,
-      basicSetup ? defaultBasicSetup : null,
       placeholder && extendPlaceholder ? extendPlaceholder(placeholder) : null,
       !editable ? EditorView.editable.of(false) : null,
       !!onUpdate && typeof onUpdate === 'function' ? EditorView.updateListener.of(onUpdate) : null,
