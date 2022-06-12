@@ -28,7 +28,6 @@ jobs:
           npm i
           npm run lint
           npm run build:release
-          npm run test
 
       - name: Release
         run: |
