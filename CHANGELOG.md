@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
+
+
+### Features
+
+* add support for CodeMirror 6.0.0 ([b47dfad](https://github.com/riccardoperra/solid-codemirror/commit/b47dfad15a56325d70a35aa6de5ef54b66256312))
+
 ## [1.0.3](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.2...v1.0.3) (2022-05-04)
 
 
