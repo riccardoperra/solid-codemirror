@@ -25,7 +25,6 @@ jobs:
           npm i
           npm run lint
           npm run build:release
-          npm run test
 
 concurrency:
   group: build-${{ github.head_ref }}

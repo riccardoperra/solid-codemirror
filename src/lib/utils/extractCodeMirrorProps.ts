@@ -10,7 +10,7 @@ export const extractCodeMirrorProps = (
     options,
     htmlAttrs
   ] = splitProps(props, [
-    'className',
+    'class',
     'value',
     'selection',
     'onChange',
@@ -30,7 +30,7 @@ export const extractCodeMirrorProps = (
   ]);
 
   const computedOptions = mergeProps({
-    className: '',
+    class: '',
     extensions: [] as Extension[],
     height: 'auto',
     minHeight: 'none',

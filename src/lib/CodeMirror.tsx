@@ -1,9 +1,9 @@
-import {Component, createEffect, onCleanup} from 'solid-js';
+import {VoidComponent, createEffect, onCleanup} from 'solid-js';
 import {createCodeMirror} from './createCodeMirror';
 import {extractCodeMirrorProps} from "./utils/extractCodeMirrorProps";
 import {CodeMirrorComponentProps} from "./types/codeMirrorProps";
 
-export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
+export const CodeMirror: VoidComponent<CodeMirrorComponentProps> = props => {
   let editor!: HTMLDivElement;
   const {options, htmlAttrs} = extractCodeMirrorProps(props);
 
@@ -25,7 +25,7 @@ export const CodeMirror: Component<CodeMirrorComponentProps> = props => {
   return (
     <div
       ref={ref => editor = ref}
-      class={`solid-cm ${options?.className ? ` ${options.className}` : ''}`}
+      class={`solid-cm ${options?.class ? ` ${options.class}` : ''}`}
       {...htmlAttrs}
     />
   );

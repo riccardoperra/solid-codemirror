@@ -1,5 +1,5 @@
 import {defineConfig} from "vite";
-import solid from "solid-start";
+import solidPlugin from 'vite-plugin-solid'
 import * as path from "path";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -20,18 +20,7 @@ export default defineConfig({
         '@codemirror/commands',
         '@codemirror/basic-setup',
       ],
-      output: {
-        globals: {
-          "solid-js": "SolidJS",
-          "solid-js/web": "SolidJs/web",
-          "solid-js/store": "SolidJs/store",
-          '@codemirror/state': "@codemirror/state",
-          '@codemirror/view': "@codemirror/view",
-          '@codemirror/commands': "@codemirror/commands'",
-          '@codemirror/basic-setup': "@codemirror/basic-setup"
-        }
-      }
     }
   },
-  plugins: [solid(), tsconfigPaths()]
+  plugins: [solidPlugin(), tsconfigPaths()]
 });
