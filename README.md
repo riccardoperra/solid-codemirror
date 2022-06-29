@@ -54,6 +54,23 @@ export const App = () => {
 };
 ```
 
+## Modularity
+
+> https://codemirror.net/docs/guide/ \
+> CodeMirror is set up as a collection of separate modules that, together, provide a full-featured text and code editor.
+> On the bright side, this means that you can pick and choose which features you need, and even replace core
+> functionality
+> with a custom implementation if you need to. On the less bright side, this means that setting up an editor requires
+> you
+> to put together a bunch of pieces.
+
+As the documentation says, CodeMirror6 is modular.
+
+solid-codemirror **will not be a replacement** for all the modules of
+CodeMirror6, but will try to provide only the primitives necessary to integrate them in SolidJS.
+
+Each extension which you need to develop your editor **must be** installed individually.
+
 ## Demo
 
 // WIP
