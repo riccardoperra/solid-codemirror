@@ -1,106 +1,71 @@
+<p>
+  <img width="100%" src="https://assets.solidjs.com/banner?type=solid-codemirror&project=solid-codemirror" alt="solid-codemirror">
+</p>
+
 # solid-codemirror
 
-[![NPM Downloads](https://img.shields.io/npm/dw/solid-codemirror?style=flat)](https://www.npmjs.com/package/riccardoperra/solid-codemirror)
-[![npm version](https://img.shields.io/npm/v/solid-codemirror)](https://www.npmjs.com/package/solid-codemirror)
-[![license](https://img.shields.io/npm/l/solid-codemirror)](https://github.com/riccardoperra/solid-codemirror/blob/main/LICENSE)
+[![pnpm](https://img.shields.io/badge/maintained%20with-pnpm-cc00ff.svg?style=for-the-badge&logo=pnpm)](https://pnpm.io/)
+[![NPM Downloads](https://img.shields.io/npm/dw/solid-codemirror?style=for-the-badge)](https://www.npmjs.com/package/riccardoperra/solid-codemirror)
+[![npm version](https://img.shields.io/npm/v/solid-codemirror?style=for-the-badge)](https://www.npmjs.com/package/solid-codemirror)
+[![license](https://img.shields.io/npm/l/solid-codemirror?style=for-the-badge)](https://github.com/riccardoperra/solid-codemirror/blob/main/LICENSE)
 
+your-repository-desc
 
-> CodeMirror component wrapper for [SolidJS](https://github.com/solidjs/solid)
+> **Note** After using this template, you have to search and replace all `your-repository-name` and similar strings
+> with appropriate texts.
+>
+> `your-repository-name` should be a **kebab-case** string representing the name of you monorepo.
+>
+> `your-repository-desc` should be a **Normal case** string with the description of the repository.
+>
+> `your-nickname` should be a **kebab-case** string from your profile URL.
+>
+> `your-author-name` should be a **Normal case** string with your first and last name.
 
-###
+## Project Commands
 
-**Features:**
+List of cli commands available from a project root.
 
-✅ Quickly and easily configure the API. \
-✅ Uses [codemirror 6](https://codemirror.net/6/) \
-✅ Written in TypeScript.
+To use the commands, first install [pnpm](https://pnpm.io) and install dependencies with `pnpm i`.
 
-## Table of contents
+```bash
+pnpm run dev
+# Builds all packages in watch mode, and starts all playgrounds
+# turbo run dev --parallel
 
-- [Table of contents](#table-of-contents)
-- [Dependencies](#dependencies)
-- [Getting started](#getting-started)
-- [Usage with hooks](#usage-with-hooks)
-- [License](#license)
+pnpm run build
+# Builds all the packages in the monorepo
+# turbo run build --filter=!./playgrounds/*
 
-## Dependencies
-`solid-codemirror` depends on [@codemirror/state](https://github.com/codemirror/state) and [@codemirror/view](https://github.com/codemirror/state). 
+pnpm run test
+# Runs tests for all the packages in the monorepo
+# turbo run test --filter=!./playgrounds/*
 
-These libraries are flagged as peerDependencies, they will be bundled automatically in this library if they are not declared in your package.json.
+pnpm run typecheck
+# Runs TS typecheck for all the packages in the monorepo
+# turbo run typecheck --filter=!./playgrounds/*
 
+pnpm run build-test
+# Runs build, typecheck and test commands for all the packages in the monorepo
+# "turbo run build test typecheck --filter=!./playgrounds/*
 
-## Getting started
+pnpm run format
+# Formats the reposotory with prettier
+# prettier -w \"packages/**/*.{js,ts,json,css,tsx,jsx,md}\" \"playgrounds/**/*.{js,ts,json,css,tsx,jsx,md}\"
 
-1. Install the dependencies
+pnpm run changeset
+# Creates a changeset
+# changeset
 
-```sh
-# pnpm
-> pnpm add @codemirror/state @codemirror/view solid-codemirror
-# or yarn
-> yarn add @codemirror/state @codemirror/view solid-codemirror
-# or npm
-> npm i @codemirror/state @codemirror/view solid-codemirror
+pnpm run version-packages
+# Applies changesets to bump package versions and update CHANGELOGs
+# "changeset version && pnpm i
+
+pnpm run release
+# Builds and publishes changed packages to npm
+# pnpm run build-test && changeset publish
+
+pnpm run update-deps
+# Updates all dependencies in the repository
+# taze -w -r && pnpm i
 ```
-
-2. Declare `CodeMirror` component in your template.
-```tsx
-import {CodeMirror} from 'solid-codemirror';
-import {createSignal} from 'solid-js';
-
-export const App = () => {
-  const [value, setValue] = createSignal("console.log('hello world!')");
-  return (
-    <CodeMirror
-      value={value}
-      height="200px"
-      basicSetup={true}
-      onChange={(value, viewUpdate) => setValue(value)}
-    />
-  );
-}
-```
-
-## Usage with hooks
-If you need a custom `CodeMirror` component, or you need more control, you can use the `createCodeMirror` hook. 
-
-Note that the built-in `CodeMirror` component uses this hook internally.
-
-```tsx
-import {createEffect} from 'solid-js';
-import {createCodeMirror} from 'solid-codemirror';
-
-// These extensions are not built-in in solid-codemirror
-import {oneDark} from '@codemirror/theme-one-dark';
-import {javascript} from '@codemirror/lang-javascript';
-
-
-export const App = () => {
-  const code = "console.log('hello world!')";
-  let editor: HTMLDivElement;
-
-  // 1. Provide the default configuration
-  const {
-    options,
-    setOptions,
-    state,
-    setState,
-    view,
-    setView
-  } = useCodeMirror({
-    container: editor.current,
-    extensions: [oneDark(), javascript()],
-    value: code,
-    basicSetup: true,
-  });
-
-
-  // 2. Set the container after rendering completes
-  createEffect(() => setContainer(editor))
-
-  return <div ref={editor}/>;
-}
-```
-
-## License
-
-Licensed under the MIT License.
