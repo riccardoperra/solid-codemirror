@@ -74,25 +74,49 @@ Each extension which you need to develop your editor **must be** installed indiv
 ## Extensions
 
 ### Control editor focus and observe `focused` state changes
+
 ```ts
-// WIP
+import { createCodeMirror, createEditorFocus } from 'solid-codemirror';
+import { createSignal } from 'solid-js';
 
+const { editorView } = createCodeMirror();
+const [readOnly, setReadOnly] = createSignal(true);
+const {
+  focused,
+  setFocused
+} = createEditorFocus(editorView, (focused) => console.log('focus changed', focused));
 
+// Focus
+setFocused(true);
+// Blur
+setFocused(false);
 ```
 
 ### Update editor readonly state
-```ts
-// WIP
 
+```typescript jsx
+import { createCodeMirror, createEditorReadonly } from 'solid-codemirror';
+import { createSignal } from 'solid-js';
 
+const { editorView } = createCodeMirror();
+const [readOnly, setReadOnly] = createSignal(true);
+void createEditorReadonly(editorView, readonly);
 ```
 
 ### Control editor code using signals
-```ts
-// WIP
 
+```typescript jsx
+import { createCodeMirror, createEditorControlledValue } from 'solid-codemirror';
+import { createSignal } from 'solid-js';
 
+const { editorView } = createCodeMirror();
+const [code, setCode] = createSignal("console.log('hello world!')");
+void createEditorControlledValue(editorView, code);
+
+// Update later
+setCode("console.log('updated!')");
 ```
+
 ## Demo
 
 // WIP
