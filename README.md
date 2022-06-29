@@ -71,6 +71,28 @@ CodeMirror6, but will try to provide only the primitives necessary to integrate 
 
 Each extension which you need to develop your editor **must be** installed individually.
 
+## Extensions
+
+### Control editor focus and observe `focused` state changes
+```ts
+// WIP
+
+
+```
+
+### Update editor readonly state
+```ts
+// WIP
+
+
+```
+
+### Control editor code using signals
+```ts
+// WIP
+
+
+```
 ## Demo
 
 // WIP
