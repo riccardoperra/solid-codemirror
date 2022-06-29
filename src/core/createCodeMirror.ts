@@ -4,29 +4,28 @@ import { EditorState, Extension } from '@codemirror/state';
 import { createCompartmentExtension as coreCreateCompartmentExtension } from './createCompartmentExtension';
 
 export interface CreateCodeMirrorProps {
-  value?: string;
-  onValueChange?: (value: string) => void;
-  onModelViewUpdate?: (vu: ViewUpdate) => void;
+  value: string;
+  onValueChange: (value: string) => void;
+  onModelViewUpdate: (vu: ViewUpdate) => void;
 }
 
-export function createCodeMirror(props: CreateCodeMirrorProps) {
+export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
   const [ref, setRef] = createSignal<HTMLElement>();
   const [editorView, setEditorView] = createSignal<EditorView>();
-  const [editorState, setEditorState] = createSignal<EditorState>();
 
   function localCreateCompartmentExtension(extension: Extension) {
     return coreCreateCompartmentExtension(extension, editorView);
   }
 
   const updateListener = EditorView.updateListener.of((vu) =>
-    props.onModelViewUpdate?.(vu)
+    props?.onModelViewUpdate?.(vu)
   );
 
   void localCreateCompartmentExtension(updateListener);
 
   createEffect(
     on(ref, (ref) => {
-      const state = EditorState.create({ doc: props.value });
+      const state = EditorState.create({ doc: props?.value ?? '' });
       const currentView = new EditorView({
         state,
         parent: ref,
@@ -36,7 +35,7 @@ export function createCodeMirror(props: CreateCodeMirrorProps) {
           if (transaction.docChanged) {
             const document = transaction.state.doc;
             const value = document.toString();
-            props.onValueChange?.(value);
+            props?.onValueChange?.(value);
           }
         },
       });
@@ -52,7 +51,7 @@ export function createCodeMirror(props: CreateCodeMirrorProps) {
 
   createEffect(
     on(
-      () => props.value,
+      () => props?.value,
       (value) => {
         const $view = editorView();
         const localValue = $view?.state.doc.toString();
@@ -72,7 +71,6 @@ export function createCodeMirror(props: CreateCodeMirrorProps) {
 
   return {
     editorView,
-    editorState,
     ref,
     setRef,
     createCompartment: localCreateCompartmentExtension,
