@@ -1,43 +1,37 @@
-name: Publish the library
 
-on:
-  push:
-    branches:
-      - main
-      - beta
+name: Release
+
+on: [workflow_dispatch]
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    environment:
-      name: release
-      url: https://github.com/riccardoperra/solid-codemirror
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - name: Checkout Repo
+        uses: actions/checkout@v2
         with:
-          node-version: '16.x'
+          fetch-depth: 0
 
-      - name: NPM install, lint, build, test
-        run: |
-          npm i
-          npm run lint
-          npm run build:release
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
 
-      - name: Release
-        run: |
-          npx semantic-release --debug
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Publish to npm
+        id: changesets
+        uses: changesets/action@v1
+        with:
+          publish: pnpm ci:release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
-
-concurrency:
-  group: release-${{ github.head_ref }}
-  cancel-in-progress: true
