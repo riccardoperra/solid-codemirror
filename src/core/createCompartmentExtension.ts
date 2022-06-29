@@ -1,10 +1,8 @@
-import {Compartment, Extension, StateEffect} from '@codemirror/state';
-import {EditorView} from '@codemirror/view';
-import {Accessor, createEffect, on} from 'solid-js';
+import { Compartment, Extension, StateEffect } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
+import { Accessor, createEffect, on } from 'solid-js';
 
-export type CompartmentReconfigurationCallback = (
-	extension: Extension
-) => void;
+export type CompartmentReconfigurationCallback = (extension: Extension) => void;
 
 /**
  * Creates a compartment extension for the given CodeMirror EditorView.
@@ -22,13 +20,13 @@ export function createCompartmentExtension(
 	extension: Extension,
 	view: Accessor<EditorView | undefined>
 ): CompartmentReconfigurationCallback {
-	let compartment = new Compartment();
+	const compartment = new Compartment();
 
 	createEffect(
-		on(view, view => {
+		on(view, (view) => {
 			if (view) {
 				view.dispatch({
-					effects: StateEffect.appendConfig.of(compartment.of(extension))
+					effects: StateEffect.appendConfig.of(compartment.of(extension)),
 				});
 			}
 		})
@@ -36,7 +34,7 @@ export function createCompartmentExtension(
 
 	return (extension: Extension) => {
 		view()?.dispatch({
-			effects: compartment.reconfigure(extension)
+			effects: compartment.reconfigure(extension),
 		});
 	};
 }
