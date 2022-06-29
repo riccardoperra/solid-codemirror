@@ -1,31 +1,30 @@
-name: Build and test
+name: Build
 
-on:
-  push:
+on: [ push ]
 
-env:
-  IS_MAIN_BRANCH: ${{ github.ref == 'refs/heads/main' }}
+concurrency: ${{ github.workflow }}-${{ github.ref }}
 
 jobs:
-  build:
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    env:
-      GH_TOKEN: ${{ secrets.GH_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - name: Checkout Repo
+        uses: actions/checkout@v2
         with:
-          node-version: '16.x'
+          fetch-depth: 0
 
-      - name: NPM install, lint, build, test
-        run: |
-          npm i
-          npm run lint
-          npm run build:release
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
 
-concurrency:
-  group: build-${{ github.head_ref }}
-  cancel-in-progress: true
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm build
