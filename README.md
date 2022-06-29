@@ -12,9 +12,7 @@
 `solid-codemirror` provides a set of utilities to make **CodeMirror6** integration easier
 for [SolidJS](https://github.com/solidjs/solid).
 
-## Getting started
-
-1. Install the dependencies
+## Installation
 
 ```bash
 # pnpm
@@ -29,64 +27,25 @@ for [SolidJS](https://github.com/solidjs/solid).
 > and [@codemirror/view](https://github.com/codemirror/state) v6.0.0. These libraries are flagged as peerDependencies.
 > It's recommended to manually install both of them to have more flexibility
 
-2. Declare `CodeMirror` component in your template.
+## Basic Usage
 
 ```tsx
-import { CodeMirror } from 'solid-codemirror';
-import { createSignal } from 'solid-js';
-
-export const App = () => {
-	const [value, setValue] = createSignal("console.log('hello world!')");
-	return (
-		<CodeMirror
-			value={value}
-			height="200px"
-			basicSetup={true}
-			onChange={(value, viewUpdate) => setValue(value)}
-		/>
-	);
-}
-```
-
-## Usage with hooks
-
-If you need a custom `CodeMirror` component, or you need more control, you can use the `createCodeMirror` hook.
-
-Note that the built-in `CodeMirror` component uses this hook internally.
-
-```tsx
-import { createEffect } from 'solid-js';
 import { createCodeMirror } from 'solid-codemirror';
-
-// These extensions are not built-in in solid-codemirror
-import { oneDark } from '@codemirror/theme-one-dark';
-import { javascript } from '@codemirror/lang-javascript';
-
+import { createSignal, onMount } from 'solid-js';
 
 export const App = () => {
-	const code = "console.log('hello world!')";
-	let editor: HTMLDivElement;
+	let ref: HTMLDivElement | undefined;
+	const [value, setValue] = createSignal("console.log('hello world!')");
 
-	// 1. Provide the default configuration
-	const {
-		options,
-		setOptions,
-		state,
-		setState,
-		view,
-		setView
-	} = createCodeMirror({
-		container: editor.current,
-		extensions: [oneDark(), javascript()],
-		value: code,
-		basicSetup: true,
+	// Creates a CodeMirror6 Editor
+	const { editorView, setRef: setEditorRef } = createCodeMirror({
+		value: value()
 	});
 
+	// Attach the editor to the DOM element.
+	onMount(() => setEditorRef(ref))
 
-	// 2. Set the container after rendering completes
-	createEffect(() => setContainer(editor))
-
-	return <div ref={editor} />;
+	return <div ref={ref} />
 }
 ```
 
