@@ -1,86 +1,86 @@
 {
-	"name": "solid-codemirror",
-	"version": "1.0.2",
-	"description": "CodeMirror component for SolidJS",
-	"type": "module",
-	"source": "src/index.tsx",
-	"main": "dist/cjs/index.js",
-	"module": "dist/esm/index.js",
-	"types": "dist/types/index.d.ts",
-	"files": [
-		"dist"
-	],
-	"exports": {
-		".": {
-			"solid": "./dist/source/index.jsx",
-			"import": "./dist/esm/index.js",
-			"browser": "./dist/esm/index.js",
-			"require": "./dist/cjs/index.js",
-			"node": "./dist/cjs/index.js"
-		}
-	},
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/riccardoperra/solid-codemirror.git"
-	},
-	"scripts": {
-		"build": "rollup -c rollup.config.js",
-		"test": "vitest",
-		"changeset": "changeset",
-		"version-packages": "changeset version && pnpm i",
-		"build-test": "pnpm build && pnpm test && pnpm typecheck --filter=!./playgrounds/*",
-		"release": "pnpm run build-test && changeset publish",
-		"postinstall": "node ./fix-jest-dom.mjs"
-	},
-	"keywords": [
-		"solidjs",
-		"solid-js",
-		"codemirror",
-		"codemirror6",
-		"ide",
-		"solid-codemirror",
-		"editor",
-		"syntax",
-		"code"
-	],
-	"devDependencies": {
-		"@changesets/cli": "^2.23.0",
-		"@testing-library/jest-dom": "^5.16.4",
-		"@types/testing-library__jest-dom": "^5.14.5",
-		"@typescript-eslint/eslint-plugin": "^5.30.0",
-		"@typescript-eslint/parser": "^5.30.0",
-		"babel-preset-solid": "^1.4.4",
-		"eslint": "^8.18.0",
-		"eslint-config-prettier": "^8.5.0",
-		"eslint-plugin-prettier": "^4.0.0",
-		"eslint-plugin-solid": "^0.4.7",
-		"jsdom": "^19.0.0",
-		"rollup": "^2.75.7",
-		"rollup-preset-solid": "^1.4.0",
-		"solid-testing-library": "^0.3.0",
-		"typescript": "^4.7.4",
-		"vite": "^2.9.9",
-		"vite-plugin-solid": "^2.2.6",
-		"vitest": "^0.12.7",
-		"prettier": "^2.7.1"
-	},
-	"peerDependencies": {
-		"@codemirror/state": "^6.0.0",
-		"@codemirror/view": "^6.0.0",
-		"solid-js": "^1.4.2"
-	},
-	"engines": {
-		"node": ">=14"
-	},
-	"dependencies": {
-		"@changesets/cli": "^2.23.0",
-		"@codemirror/state": "^6.0.1",
-		"@codemirror/view": "^6.0.2",
-		"solid-js": "^1.4.2"
-	},
-	"lint-staged": {
-		"*.{js,ts}": "eslint --fix",
-		"*.{js,css,json,md,jsx,yml,yaml}": "prettier --ignore-path .gitignore --write"
-	}
+  "name": "solid-codemirror",
+  "version": "1.0.2",
+  "description": "CodeMirror component for SolidJS",
+  "type": "module",
+  "source": "src/index.tsx",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "solid": "./dist/source/index.jsx",
+      "import": "./dist/esm/index.js",
+      "browser": "./dist/esm/index.js",
+      "require": "./dist/cjs/index.js",
+      "node": "./dist/cjs/index.js"
+    }
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/riccardoperra/solid-codemirror.git"
+  },
+  "scripts": {
+    "build": "rollup -c rollup.config.js",
+    "test": "vitest",
+    "changeset": "changeset",
+    "version-packages": "changeset version && pnpm i",
+    "build-test": "pnpm build && pnpm test && pnpm typecheck --filter=!./playgrounds/*",
+    "release": "pnpm run build-test && changeset publish",
+    "postinstall": "node ./fix-jest-dom.mjs"
+  },
+  "keywords": [
+    "solidjs",
+    "solid-js",
+    "codemirror",
+    "codemirror6",
+    "ide",
+    "solid-codemirror",
+    "editor",
+    "syntax",
+    "code"
+  ],
+  "devDependencies": {
+    "@changesets/cli": "^2.23.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@types/testing-library__jest-dom": "^5.14.5",
+    "@typescript-eslint/eslint-plugin": "^5.30.0",
+    "@typescript-eslint/parser": "^5.30.0",
+    "babel-preset-solid": "^1.4.4",
+    "eslint": "^8.18.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "eslint-plugin-solid": "^0.4.7",
+    "jsdom": "^19.0.0",
+    "rollup": "^2.75.7",
+    "rollup-preset-solid": "^1.4.0",
+    "solid-testing-library": "^0.3.0",
+    "typescript": "^4.7.4",
+    "vite": "^2.9.9",
+    "vite-plugin-solid": "^2.2.6",
+    "vitest": "^0.12.7",
+    "prettier": "^2.7.1"
+  },
+  "peerDependencies": {
+    "@codemirror/state": "^6.0.0",
+    "@codemirror/view": "^6.0.0",
+    "solid-js": "^1.4.2"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.23.0",
+    "@codemirror/state": "^6.0.1",
+    "@codemirror/view": "^6.0.2",
+    "solid-js": "^1.4.2"
+  },
+  "lint-staged": {
+    "*.{js,ts}": "eslint --fix",
+    "*.{js,css,json,md,jsx,yml,yaml}": "prettier --ignore-path .gitignore --write"
+  }
 }

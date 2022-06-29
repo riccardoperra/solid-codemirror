@@ -34,22 +34,21 @@ import { createCodeMirror } from 'solid-codemirror';
 import { createSignal, onMount } from 'solid-js';
 
 export const App = () => {
-	let ref: HTMLDivElement | undefined;
-	const [value, setValue] = createSignal("console.log('hello world!')");
+  let ref: HTMLDivElement | undefined;
+  const [value, setValue] = createSignal("console.log('hello world!')");
 
-	// Creates a CodeMirror6 Editor
-	const { editorView, setRef: setEditorRef } = createCodeMirror({
-		value: value()
-	});
+  // Creates a CodeMirror6 Editor
+  const { editorView, setRef: setEditorRef } = createCodeMirror({
+    value: value(),
+  });
 
-	// Attach the editor to the DOM element.
-	onMount(() => setEditorRef(ref))
+  // Attach the editor to the DOM element.
+  onMount(() => setEditorRef(ref));
 
-	return <div ref={ref} />
-}
+  return <div ref={ref} />;
+};
 ```
 
 ## License
 
 Licensed under the MIT License.
-

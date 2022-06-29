@@ -1,4 +1,4 @@
-import {EditorView, ViewUpdate} from "@codemirror/view";
+import { EditorView, ViewUpdate } from '@codemirror/view';
 
 export const updateListenerExtension = (
   onChange?: (value: string, vu: ViewUpdate) => void
@@ -9,5 +9,5 @@ export const updateListenerExtension = (
       const value = document.toString();
       onChange(value, vu);
     }
-  })
-}
+  });
+};

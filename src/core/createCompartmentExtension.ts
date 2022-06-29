@@ -17,24 +17,24 @@ export type CompartmentReconfigurationCallback = (extension: Extension) => void;
  * @param view The CodeMirror EditorView
  */
 export function createCompartmentExtension(
-	extension: Extension,
-	view: Accessor<EditorView | undefined>
+  extension: Extension,
+  view: Accessor<EditorView | undefined>
 ): CompartmentReconfigurationCallback {
-	const compartment = new Compartment();
+  const compartment = new Compartment();
 
-	createEffect(
-		on(view, (view) => {
-			if (view) {
-				view.dispatch({
-					effects: StateEffect.appendConfig.of(compartment.of(extension)),
-				});
-			}
-		})
-	);
+  createEffect(
+    on(view, (view) => {
+      if (view) {
+        view.dispatch({
+          effects: StateEffect.appendConfig.of(compartment.of(extension)),
+        });
+      }
+    })
+  );
 
-	return (extension: Extension) => {
-		view()?.dispatch({
-			effects: compartment.reconfigure(extension),
-		});
-	};
+  return (extension: Extension) => {
+    view()?.dispatch({
+      effects: compartment.reconfigure(extension),
+    });
+  };
 }

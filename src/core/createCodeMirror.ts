@@ -4,77 +4,77 @@ import { EditorState, Extension } from '@codemirror/state';
 import { createCompartmentExtension as coreCreateCompartmentExtension } from './createCompartmentExtension';
 
 export interface CreateCodeMirrorProps {
-	value?: string;
-	onValueChange?: (value: string) => void;
-	onModelViewUpdate?: (vu: ViewUpdate) => void;
+  value?: string;
+  onValueChange?: (value: string) => void;
+  onModelViewUpdate?: (vu: ViewUpdate) => void;
 }
 
 export function createCodeMirror(props: CreateCodeMirrorProps) {
-	const [ref, setRef] = createSignal<HTMLElement>();
-	const [editorView, setEditorView] = createSignal<EditorView>();
-	const [editorState, setEditorState] = createSignal<EditorState>();
+  const [ref, setRef] = createSignal<HTMLElement>();
+  const [editorView, setEditorView] = createSignal<EditorView>();
+  const [editorState, setEditorState] = createSignal<EditorState>();
 
-	function localCreateCompartmentExtension(extension: Extension) {
-		return coreCreateCompartmentExtension(extension, editorView);
-	}
+  function localCreateCompartmentExtension(extension: Extension) {
+    return coreCreateCompartmentExtension(extension, editorView);
+  }
 
-	const updateListener = EditorView.updateListener.of((vu) =>
-		props.onModelViewUpdate?.(vu)
-	);
+  const updateListener = EditorView.updateListener.of((vu) =>
+    props.onModelViewUpdate?.(vu)
+  );
 
-	void localCreateCompartmentExtension(updateListener);
+  void localCreateCompartmentExtension(updateListener);
 
-	createEffect(
-		on(ref, (ref) => {
-			const state = EditorState.create({ doc: props.value });
-			const currentView = new EditorView({
-				state,
-				parent: ref,
-				// Replace the old `updateListenerExtension`
-				dispatch: (transaction) => {
-					currentView.update([transaction]);
-					if (transaction.docChanged) {
-						const document = transaction.state.doc;
-						const value = document.toString();
-						props.onValueChange?.(value);
-					}
-				},
-			});
+  createEffect(
+    on(ref, (ref) => {
+      const state = EditorState.create({ doc: props.value });
+      const currentView = new EditorView({
+        state,
+        parent: ref,
+        // Replace the old `updateListenerExtension`
+        dispatch: (transaction) => {
+          currentView.update([transaction]);
+          if (transaction.docChanged) {
+            const document = transaction.state.doc;
+            const value = document.toString();
+            props.onValueChange?.(value);
+          }
+        },
+      });
 
-			setEditorView(currentView);
+      setEditorView(currentView);
 
-			onCleanup(() => {
-				setEditorView(undefined);
-				editorView()?.destroy();
-			});
-		})
-	);
+      onCleanup(() => {
+        setEditorView(undefined);
+        editorView()?.destroy();
+      });
+    })
+  );
 
-	createEffect(
-		on(
-			() => props.value,
-			(value) => {
-				const $view = editorView();
-				const localValue = $view?.state.doc.toString();
-				if (localValue !== value && !!$view) {
-					$view.dispatch({
-						changes: {
-							from: 0,
-							to: localValue?.length,
-							insert: value ?? '',
-						},
-					});
-				}
-			},
-			{ defer: true }
-		)
-	);
+  createEffect(
+    on(
+      () => props.value,
+      (value) => {
+        const $view = editorView();
+        const localValue = $view?.state.doc.toString();
+        if (localValue !== value && !!$view) {
+          $view.dispatch({
+            changes: {
+              from: 0,
+              to: localValue?.length,
+              insert: value ?? '',
+            },
+          });
+        }
+      },
+      { defer: true }
+    )
+  );
 
-	return {
-		editorView,
-		editorState,
-		ref,
-		setRef,
-		createCompartment: localCreateCompartmentExtension,
-	};
+  return {
+    editorView,
+    editorState,
+    ref,
+    setRef,
+    createCompartment: localCreateCompartmentExtension,
+  };
 }

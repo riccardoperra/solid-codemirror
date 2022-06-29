@@ -1,8 +1,10 @@
-import {EditorStateConfig, Extension} from '@codemirror/state';
-import {ViewUpdate} from '@codemirror/view';
-import {JSX} from 'solid-js';
+import { EditorStateConfig, Extension } from '@codemirror/state';
+import { ViewUpdate } from '@codemirror/view';
+import { JSX } from 'solid-js';
 
-export interface CodeMirrorComponentProps extends Omit<EditorStateConfig, 'doc' | 'extensions'>, Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange' | 'placeholder'> {
+export interface CodeMirrorComponentProps
+  extends Omit<EditorStateConfig, 'doc' | 'extensions'>,
+    Omit<JSX.HTMLAttributes<HTMLDivElement>, 'onChange' | 'placeholder'> {
   /**
    * value of the auto created model in the editor.
    */

@@ -1,15 +1,9 @@
-import {CodeMirrorComponentProps} from "../types/codeMirrorProps";
-import {mergeProps, splitProps} from "solid-js";
-import {Extension} from "@codemirror/state";
+import { CodeMirrorComponentProps } from '../types/codeMirrorProps';
+import { mergeProps, splitProps } from 'solid-js';
+import { Extension } from '@codemirror/state';
 
-
-export const extractCodeMirrorProps = (
-  props: CodeMirrorComponentProps
-) => {
-  const [
-    options,
-    htmlAttrs
-  ] = splitProps(props, [
+export const extractCodeMirrorProps = (props: CodeMirrorComponentProps) => {
+  const [options, htmlAttrs] = splitProps(props, [
     'class',
     'value',
     'selection',
@@ -29,20 +23,23 @@ export const extractCodeMirrorProps = (
     'indentWithTab',
   ]);
 
-  const computedOptions = mergeProps({
-    class: '',
-    extensions: [] as Extension[],
-    height: 'auto',
-    minHeight: 'none',
-    maxHeight: 'none',
-    placeHolder: '',
-    width: 'auto',
-    minWidth: 'none',
-    maxWidth: 'none',
-    editable: true,
-    indentWithTab: true,
-    basicSetup: true
-  }, options)
+  const computedOptions = mergeProps(
+    {
+      class: '',
+      extensions: [] as Extension[],
+      height: 'auto',
+      minHeight: 'none',
+      maxHeight: 'none',
+      placeHolder: '',
+      width: 'auto',
+      minWidth: 'none',
+      maxWidth: 'none',
+      editable: true,
+      indentWithTab: true,
+      basicSetup: true,
+    },
+    options
+  );
 
-  return {options: computedOptions, htmlAttrs};
-}
+  return { options: computedOptions, htmlAttrs };
+};
