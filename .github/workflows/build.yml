@@ -1,6 +1,6 @@
 name: Build
 
-on: [ push ]
+on: [push]
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 
