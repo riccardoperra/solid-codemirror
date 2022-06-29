@@ -9,8 +9,13 @@
 [![npm version](https://img.shields.io/npm/v/solid-codemirror?style=for-the-badge)](https://www.npmjs.com/package/solid-codemirror)
 [![license](https://img.shields.io/npm/l/solid-codemirror?style=for-the-badge)](https://github.com/riccardoperra/solid-codemirror/blob/main/LICENSE)
 
-`solid-codemirror` provides a set of utilities to make **CodeMirror6** integration easier
+**solid-codemirror** provides a set of utilities to make **CodeMirror6** integration easier
 for [SolidJS](https://github.com/solidjs/solid).
+
+This library was initially born to be the entry of the SolidJS hackathon, but has become the core editor
+of [CodeImage](https://github.com/riccardoperra/codeimage).
+
+> **Warning** It is currently under development and many refactors are still to be done.
 
 ## Installation
 
@@ -48,6 +53,10 @@ export const App = () => {
   return <div ref={ref} />;
 };
 ```
+
+## Demo
+
+// WIP
 
 ## License
 
