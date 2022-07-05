@@ -1,19 +1,33 @@
-import { createEffect, createSignal, on, onCleanup } from 'solid-js';
+import { Accessor, createEffect, createSignal, on, onCleanup } from 'solid-js';
 import { EditorView, ViewUpdate } from '@codemirror/view';
 import { EditorState, Extension } from '@codemirror/state';
 import { createCompartmentExtension as coreCreateCompartmentExtension } from './createCompartmentExtension';
 
 export interface CreateCodeMirrorProps {
+  /**
+   * The initial value of the editor
+   */
   value: string;
+  /**
+   * Fired whenever the editor code value changes.
+   */
   onValueChange: (value: string) => void;
+  /**
+   * Fired whenever a change occurs to the document. There is a certain difference with `onChange`.
+   */
   onModelViewUpdate: (vu: ViewUpdate) => void;
 }
 
+/**
+ * Creates a CodeMirror editor instance.
+ */
 export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
   const [ref, setRef] = createSignal<HTMLElement>();
   const [editorView, setEditorView] = createSignal<EditorView>();
 
-  function localCreateCompartmentExtension(extension: Extension) {
+  function localCreateCompartmentExtension(
+    extension: Extension | Accessor<Extension | undefined>
+  ) {
     return coreCreateCompartmentExtension(extension, editorView);
   }
 
@@ -21,7 +35,8 @@ export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
     props?.onModelViewUpdate?.(vu)
   );
 
-  void localCreateCompartmentExtension(updateListener);
+  // eslint-disable-next-line solid/reactivity
+  localCreateCompartmentExtension(updateListener);
 
   createEffect(
     on(ref, (ref) => {
@@ -51,16 +66,15 @@ export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
 
   createEffect(
     on(
-      () => props?.value,
-      (value) => {
-        const $view = editorView();
-        const localValue = $view?.state.doc.toString();
-        if (localValue !== value && !!$view) {
-          $view.dispatch({
+      editorView,
+      (editorView) => {
+        const localValue = editorView?.state.doc.toString();
+        if (localValue !== props?.value && !!editorView) {
+          editorView.dispatch({
             changes: {
               from: 0,
               to: localValue?.length,
-              insert: value ?? '',
+              insert: props?.value ?? '',
             },
           });
         }
@@ -71,8 +85,7 @@ export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
 
   return {
     editorView,
-    ref,
-    setRef,
-    createCompartment: localCreateCompartmentExtension,
-  };
+    ref: setRef,
+    createExtension: localCreateCompartmentExtension,
+  } as const;
 }
