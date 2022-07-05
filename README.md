@@ -94,27 +94,86 @@ setFocused(false);
 
 ### Update editor readonly state
 
+After the CodeMirror editor is mounted, you can update its readonly state using the
+`createReadonlyEditor` function that accept the editor view and the readOnly accessor.
+> **Note** Updating the accessor, the editor readOnly state will be updated automatically;
+
 ```typescript jsx
 import { createCodeMirror, createEditorReadonly } from 'solid-codemirror';
 import { createSignal } from 'solid-js';
 
-const { editorView } = createCodeMirror();
-const [readOnly, setReadOnly] = createSignal(true);
-void createEditorReadonly(editorView, readonly);
+function App() {
+  const { ref } = createCodeMirror();
+  const [readOnly, setReadOnly] = createSignal(true);
+  createEditorReadonly(editorView, readonly);
+
+  return <div ref={ref} />
+}
 ```
 
 ### Control editor code using signals
+
+After CodeMirror editor is mounted, you can control the code state using the
+`createEditorControlledValue`.
+
+> **Note** The value of the editor is already memoized
 
 ```typescript jsx
 import { createCodeMirror, createEditorControlledValue } from 'solid-codemirror';
 import { createSignal } from 'solid-js';
 
-const { editorView } = createCodeMirror();
-const [code, setCode] = createSignal("console.log('hello world!')");
-void createEditorControlledValue(editorView, code);
+function App() {
+  const [code, setCode] = createSignal("console.log('hello world!')");
+  const { ref } = createCodeMirror({ onValueChange: setCode });
+  createEditorControlledValue(editorView, code);
 
-// Update later
-setCode("console.log('updated!')");
+  // Update code after 2.5s
+  setTimeout(() => {
+    setCode("console.log('updated!')");
+  }, 2500);
+
+  return <div ref={ref} />
+}
+```
+
+### Handle custom extensions
+
+After CodeMirror editor is mounted, you can handle custom extensions thanks to the
+`createExtension` function. It both accept an `Extension` or `Accessor<Extension | undefined>` then
+it will be automatically reconfigured when the extension changes. Otherwise, you can manually reconfigure them using
+the returned `reconfigure` function.
+
+For more details, see the official documentation about [compartments](https://codemirror.net/examples/reconfigure).
+
+```typescript jsx
+import { createCodeMirror } from 'solid-codemirror';
+import { createSignal } from 'solid-js';
+import { EditorView } from '@codemirror/view';
+
+function App() {
+  const [code, setCode] = createSignal("console.log('hello world!')");
+  const [showLineNumber, setShowLineNumber] = createSignal(true);
+  const { ref, createExtension } = createCodeMirror({ onValueChange: setCode });
+
+  const theme = EditorView.theme({
+    '&': {
+      background: 'red'
+    }
+  });
+
+  // Add a static custom theme
+  createExtension(theme);
+
+  // Toggle extension
+  createExtension(() => showLineNumber() ? lineNumbers() : []);
+
+  // Remove line numbers after 2.5s
+  setTimeout(() => {
+    setShowLineNumber(false);
+  }, 2500);
+
+  return <div ref={ref} />
+}
 ```
 
 ## Demo
