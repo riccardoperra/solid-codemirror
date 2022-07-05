@@ -148,7 +148,7 @@ For more details, see the official documentation about [compartments](https://co
 ```typescript jsx
 import { createCodeMirror } from 'solid-codemirror';
 import { createSignal } from 'solid-js';
-import { EditorView } from '@codemirror/view';
+import { EditorView, lineNumbers } from '@codemirror/view';
 
 function App() {
   const [code, setCode] = createSignal("console.log('hello world!')");
