@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.0.1
+
+### Patch Changes
+
+- 139fe36: fix: allows to use library without type module
+
 ## 2.0.0
 
 ### Major Changes
