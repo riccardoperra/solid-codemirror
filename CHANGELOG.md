@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.0.2
+
+### Patch Changes
+
+- f983062: add cjs build
+
 ## 2.0.1
 
 ### Patch Changes
