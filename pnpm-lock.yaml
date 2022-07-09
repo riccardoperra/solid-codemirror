@@ -4,6 +4,8 @@ importers:
 
   .:
     specifiers:
+      '@babel/preset-env': ^7.18.6
+      '@babel/preset-typescript': ^7.18.6
       '@changesets/cli': ^2.23.0
       '@codemirror/state': ^6.0.1
       '@codemirror/view': ^6.0.2
@@ -31,6 +33,8 @@ importers:
       '@codemirror/view': 6.0.2
       solid-js: 1.4.5
     devDependencies:
+      '@babel/preset-env': 7.18.6_@babel+core@7.18.6
+      '@babel/preset-typescript': 7.18.6_@babel+core@7.18.6
       '@testing-library/jest-dom': 5.16.4
       '@typescript-eslint/eslint-plugin': 5.30.0_5mtqsiui4sk53pmkx7i7ue45wm
       '@typescript-eslint/parser': 5.30.0_b5e7v2qnwxfo6hmiq56u52mz3e
