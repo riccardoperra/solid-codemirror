@@ -31,6 +31,29 @@ of [CodeImage](https://github.com/riccardoperra/codeimage).
 > peerDependencies**.
 > It's recommended to manually install both of them to have more control and flexibility for implementation
 
+### CodeMirror packages error fix
+
+> **Warning** You may encounter this error using Vite
+
+```bash
+Error: Unrecognized extension value in extension set ([object Object]). 
+This sometimes happens because multipleinstances of @codemirror/state are loaded, 
+breaking instanceof checks.
+```
+
+If @codemirror/state and @codemirror/view are not working even if their version dont't mismatch, you can try to add the
+following to your `vite.config.{js,ts}` file:
+
+```typescript 
+export default defineConfig({
+  // Your configuration
+  optimizeDeps: {
+    // Add both @codemirror/state and @codemirror/view to included deps to optimize
+    include: ['@codemirror/state', '@codemirror/view'],
+  }
+})
+```
+
 ## Basic Usage
 
 First, we need to create a new CodeMirror instance through the `createCodeMirror` function. Next, the given `ref`
