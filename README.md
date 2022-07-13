@@ -15,13 +15,11 @@ for [SolidJS](https://github.com/solidjs/solid).
 This library was initially born to be the entry of the SolidJS hackathon, but has become the core editor
 of [CodeImage](https://github.com/riccardoperra/codeimage).
 
-> **Warning** It is currently under development and many refactors are still to be done.
-
 ## Installation
 
 ```bash
 # pnpm
-> pnpm solid-codemirror
+> pnpm add solid-codemirror
 # or yarn
 > yarn add solid-codemirror
 # or npm
@@ -29,30 +27,41 @@ of [CodeImage](https://github.com/riccardoperra/codeimage).
 ```
 
 > **Note** This library depends on [@codemirror/state](https://github.com/codemirror/state)
-> and [@codemirror/view](https://github.com/codemirror/state) v6.0.0. These libraries are flagged as peerDependencies.
-> It's recommended to manually install both of them to have more flexibility
+> and [@codemirror/view](https://github.com/codemirror/state) v6.0.0. These libraries are flagged as **
+> peerDependencies**.
+> It's recommended to manually install both of them to have more control and flexibility for implementation
 
 ## Basic Usage
+
+First, we need to create a new CodeMirror instance through the `createCodeMirror` function. Next, the given `ref`
+object must be attached to a DOM Element in order to initialize the `EditorView` instance with his own `EditorState`.
 
 ```tsx
 import { createCodeMirror } from 'solid-codemirror';
 import { createSignal, onMount } from 'solid-js';
 
 export const App = () => {
-  let ref: HTMLDivElement | undefined;
-  const [value, setValue] = createSignal("console.log('hello world!')");
-
-  // Creates a CodeMirror6 Editor
-  const { editorView, setRef: setEditorRef } = createCodeMirror({
-    value: value(),
+  const { editorView, ref: editorRef } = createCodeMirror({
+    // The initial value of the editor
+    value: "console.log('hello world!')",
+    // Fired whenever the editor code value changes.
+    onValueChange: (value) => console.log('value changed', value),
+    // Fired whenever a change occurs to the document. There is a certain difference with `onChange`.
+    onModelViewUpdate: (modelView) => console.log('modelView updated', modelView),
   });
 
-  // Attach the editor to the DOM element.
-  onMount(() => setEditorRef(ref));
-
-  return <div ref={ref} />;
+  return <div ref={editorRef} />;
 };
 ```
+
+The `createCodeMirror` function is the main function of `solid-codemirror` to start creating your editor. It exposes the
+following properties:
+
+| Property     | Description                                                                                                                                                                                      |
+|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ref`        | The HTMLElement object which will be attached to the EditorView instance                                                                                                                         |
+| `editorView` | The current EditorView instance of CodeMirror. Will be `null` as default, and it will be valued when the given `ref` is mounted in the DOM                                                       |
+| `createExtension` | A function to create a new extension for CodeMirror using compartments. It's a shortand for the `createCompartmentExtension` helper which automatically attaches the right `EditorView` instance |
 
 ## Modularity
 
@@ -69,7 +78,7 @@ As the documentation says, CodeMirror6 is modular.
 solid-codemirror **will not be a replacement** for all the modules of
 CodeMirror6, but will try to provide only the primitives necessary to integrate them in SolidJS.
 
-Each extension which you need to develop your editor **must be** installed individually.
+Each extension which you need to develop your editor **must be** installed individually and integrated individually.
 
 ## Extensions
 
@@ -180,6 +189,14 @@ function App() {
 
 // WIP
 
+You can also view an advanced implementation of `solid-codemirror`
+through [CodeImage](https://github.com/riccardoperra/codeimage/blob/main/apps/codeimage/src/components/CustomEditor/CustomEditor.tsx)
+implementation
+
+## Author
+
+- [Riccardo Perra](https://github.com/riccardoperra/solid-codemirror)
+
 ## License
 
-Licensed under the MIT License.
+Licensed under the [MIT License](./LICENSE).
