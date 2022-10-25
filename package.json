@@ -32,7 +32,9 @@
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm i",
     "build-test": "pnpm build && pnpm test && pnpm typecheck --filter=!./playgrounds/*",
-    "release": "pnpm run build-test && changeset publish"
+    "release": "changeset publish",
+    "ci:publish": "changeset publish",
+    "ci:version": "changeset version"
   },
   "keywords": [
     "solidjs",
