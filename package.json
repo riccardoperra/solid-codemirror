@@ -28,6 +28,7 @@
   "scripts": {
     "build": "rollup -c rollup.config.js",
     "test": "vitest",
+    "dev": "vite dev ./dev",
     "changeset": "changeset",
     "version-packages": "changeset version && pnpm i",
     "build-test": "pnpm build && pnpm test && pnpm typecheck --filter=!./playgrounds/*",
@@ -69,16 +70,16 @@
   "peerDependencies": {
     "@codemirror/state": "^6.0.0",
     "@codemirror/view": "^6.0.0",
-    "solid-js": "^1.4.2"
+    "solid-js": "^1.6.0"
   },
   "engines": {
     "node": ">=14"
   },
   "dependencies": {
-    "@changesets/cli": "^2.23.0",
-    "@codemirror/state": "^6.0.1",
-    "@codemirror/view": "^6.0.2",
-    "solid-js": "^1.4.2"
+    "@changesets/cli": "^2.25.0",
+    "@codemirror/state": "^6.1.2",
+    "@codemirror/view": "^6.4.0",
+    "solid-js": "^1.6.0"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",
