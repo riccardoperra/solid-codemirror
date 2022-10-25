@@ -55,7 +55,7 @@ export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
         },
       });
 
-      setEditorView(currentView);
+      queueMicrotask(() => setEditorView(currentView));
 
       onCleanup(() => {
         setEditorView(undefined);
