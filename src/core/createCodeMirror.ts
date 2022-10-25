@@ -1,4 +1,11 @@
-import { Accessor, createEffect, createSignal, on, onCleanup } from 'solid-js';
+import {
+  Accessor,
+  createEffect,
+  createSignal,
+  on,
+  onCleanup,
+  onMount,
+} from 'solid-js';
 import { EditorView, ViewUpdate } from '@codemirror/view';
 import { EditorState, Extension } from '@codemirror/state';
 import { createCompartmentExtension as coreCreateCompartmentExtension } from './createCompartmentExtension';
@@ -55,7 +62,7 @@ export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
         },
       });
 
-      queueMicrotask(() => setEditorView(currentView));
+      onMount(() => setEditorView(currentView));
 
       onCleanup(() => {
         setEditorView(undefined);

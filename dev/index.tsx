@@ -1,6 +1,6 @@
 import { createSignal } from 'solid-js';
 import { render } from 'solid-js/web';
-import { createCodeMirror } from '../src';
+import { createCodeMirror } from '..';
 import { EditorView, lineNumbers } from '@codemirror/view';
 
 function App() {
