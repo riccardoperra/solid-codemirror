@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.1.2
+
+### Patch Changes
+
+- 08597c8: fix extension rendering
+
 ## 2.1.1
 
 ### Patch Changes
