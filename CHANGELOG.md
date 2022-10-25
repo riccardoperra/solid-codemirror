@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.1.0
+
+### Minor Changes
+
+- 3cbf031: fix: fix extension not applying when mounting ref on jsx
+
 ## 2.0.2
 
 ### Patch Changes
