@@ -208,6 +208,39 @@ function App() {
 }
 ```
 
+### Lazy loading extensions
+
+Sometimes you may need to better split your custom extensions in order to reduce the initial bundle size.
+This is the case where you need to use dynamic imports in order to resolve the module in lazy loading.
+
+```tsx
+// ✅ 1. Remove the static import
+// import { largeExtension } from './large-extension';
+import { createLazyCompartmentExtension } from './createLazyCompartmentExtension';
+import { Show } from 'solid-js';
+
+function App() {
+  const [code, setCode] = createSignal("console.log('hello world!')");
+  const { ref, createExtension } = createCodeMirror({ onValueChange: setCode });
+
+  // ✅ 2. Call the helper providing a Promise<Extension>
+  // The extension will be configured only after the Promise resolves
+  const largeExt = createLazyCompartmentExtension(
+    () => import('./large-extension').then(res => res.largeExtension)
+  );
+
+  return (
+    <div>
+      <div ref={ref} />
+      {/*✅ 3. You can read the pending state of the Promise*/}
+      <Show when={largeExt.loading}>
+        Loading...
+      </Show>
+    </div>
+  )
+}
+```
+
 ## Demo
 
 // WIP
