@@ -1,0 +1,38 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const utils_1 = require("@typescript-eslint/utils");
+const jsx_ast_utils_1 = require("jsx-ast-utils");
+const {} = utils_1.ASTUtils;
+const rule = {
+    meta: {
+        type: "problem",
+        docs: {
+            recommended: "error",
+            description: "Enforce using Solid's `<For />` component for mapping an array to JSX elements.",
+            url: "https://github.com/joshwilsonvu/eslint-plugin-solid/blob/main/docs/prefer-for.md",
+        },
+        fixable: "code",
+        schema: [],
+        messages: {
+            preferFor: "Use Solid's `<For />` component for efficiently rendering lists.",
+            preferForOrIndex: "Use Solid's `<For />` component or `<Index />` component for rendering lists.",
+        },
+    },
+    create(context) {
+        var _a;
+        const esTreeNodeToTSNodeMap = (_a = context.parserServices) === null || _a === void 0 ? void 0 : _a.esTreeNodeToTSNodeMap;
+        return {
+            JSXOpeningElement(node) {
+                if (node.name.type !== "JSXIdentifier") {
+                    return;
+                }
+                const keyAttribute = jsx_ast_utils_1.getProp(node.attributes, "key");
+                const fix = (fixer) => { };
+                if (keyAttribute) {
+                    if (/^[a-z]/.test(node.name.name)) {
+                    }
+                }
+            },
+        };
+    },
+};

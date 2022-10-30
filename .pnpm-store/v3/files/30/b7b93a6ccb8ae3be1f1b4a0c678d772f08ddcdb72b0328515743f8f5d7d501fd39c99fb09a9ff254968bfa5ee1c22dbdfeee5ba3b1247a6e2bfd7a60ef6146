@@ -1,0 +1,67 @@
+{
+  "name": "eslint-plugin-prettier",
+  "version": "4.1.0",
+  "description": "Runs prettier as an eslint rule",
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "eslint-plugin",
+    "prettier"
+  ],
+  "author": "Teddy Katz",
+  "files": [
+    "eslint-plugin-prettier.js"
+  ],
+  "main": "eslint-plugin-prettier.js",
+  "scripts": {
+    "lint": "eslint .",
+    "test": "npm run lint && mocha",
+    "format": "yarn run prettier '**/*.{js,json,md,yml}' --write && yarn run lint --fix",
+    "generate-release": "node-release-script"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prettier/eslint-plugin-prettier.git"
+  },
+  "bugs": {
+    "url": "https://github.com/prettier/eslint-plugin-prettier/issues"
+  },
+  "homepage": "https://github.com/prettier/eslint-plugin-prettier#readme",
+  "dependencies": {
+    "prettier-linter-helpers": "^1.0.0"
+  },
+  "peerDependencies": {
+    "eslint": ">=7.28.0",
+    "prettier": ">=2.0.0"
+  },
+  "devDependencies": {
+    "@graphql-eslint/eslint-plugin": "^2.5.0",
+    "@not-an-aardvark/node-release-script": "^0.1.0",
+    "@typescript-eslint/parser": "^5.29.0",
+    "eslint": "^8.18.0",
+    "eslint-config-not-an-aardvark": "^2.1.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-mdx": "^1.17.0",
+    "eslint-plugin-eslint-plugin": "^4.3.0",
+    "eslint-plugin-mdx": "^1.17.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "link:.",
+    "eslint-plugin-self": "^1.2.1",
+    "graphql": "^16.5.0",
+    "mocha": "^9.2.2",
+    "prettier": "^2.7.1",
+    "vue-eslint-parser": "^8.3.0"
+  },
+  "peerDependenciesMeta": {
+    "eslint-config-prettier": {
+      "optional": true
+    }
+  },
+  "resolutions": {
+    "@babel/traverse": "^7.18.5"
+  },
+  "engines": {
+    "node": ">=12.0.0"
+  },
+  "license": "MIT"
+}

@@ -1,0 +1,89 @@
+import { ModuleFormat, RollupOptions } from "rollup";
+import { RollupBabelInputPluginOptions } from "@rollup/plugin-babel";
+export default function withSolid(options?: Options | Options[]): RollupOptions | RollupOptions[];
+export interface Options extends RollupOptions {
+    /**
+     * Defines which target you want
+     * @default ['esm']
+     */
+    targets?: ModuleFormat[];
+    /**
+     * Whether to generate a package.json or not
+     * This is useful for sub packages
+     * @default false
+     */
+    writePackageJson?: boolean;
+    /**
+     * Whether to hint what to put in your package.json or not
+     * @default false
+     */
+    printInstructions?: boolean;
+    /**
+     * This can be used to override the default babel options
+     * The targets can be set in the "browserslist" field in your `package.json`.
+     * Beware the options are only merged at the top level.
+     * If you add babel presets you'll need to add the default one back (as you see fit).
+     * @default {
+     *   extensions,
+     *   babelHelpers: "bundled",
+     *   presets: ["babel-preset-solid", "@babel/preset-typescript", ['@babel/preset-env', { bugfixes: true, targets: "last 2 years" }]],
+     * }
+     */
+    babelOptions?: RollupBabelInputPluginOptions;
+    solidOptions?: SolidOptions;
+    /**
+     * TODO: Document this
+     */
+    mappingName?: string;
+}
+interface SolidOptions {
+    /**
+     * The name of the runtime module to import the methods from.
+     *
+     * @default "solid-js/web"
+     */
+    moduleName?: string;
+    /**
+     * The output mode of the compiler.
+     * Can be:
+     * - "dom" is standard output
+     * - "ssr" is for server side rendering of strings.
+     *
+     * @default "dom"
+     */
+    generate?: "ssr" | "dom";
+    /**
+     * Indicate whether the output should contain hydratable markers.
+     *
+     * @default false
+     */
+    hydratable?: boolean;
+    /**
+     * Boolean to indicate whether to enable automatic event delegation on camelCase.
+     *
+     * @default true
+     */
+    delegateEvents?: boolean;
+    /**
+     * Boolean indicates whether smart conditional detection should be used.
+     * This optimizes simple boolean expressions and ternaries in JSX.
+     *
+     * @default true
+     */
+    wrapConditionals?: boolean;
+    /**
+     * Boolean indicates whether to set current render context on Custom Elements and slots.
+     * Useful for seemless Context API with Web Components.
+     *
+     * @default true
+     */
+    contextToCustomElements?: boolean;
+    /**
+     * Array of Component exports from module, that aren't included by default with the library.
+     * This plugin will automatically import them if it comes across them in the JSX.
+     *
+     * @default ["For","Show","Switch","Match","Suspense","SuspenseList","Portal","Index","Dynamic","ErrorBoundary"]
+     */
+    builtIns?: string[];
+}
+export {};

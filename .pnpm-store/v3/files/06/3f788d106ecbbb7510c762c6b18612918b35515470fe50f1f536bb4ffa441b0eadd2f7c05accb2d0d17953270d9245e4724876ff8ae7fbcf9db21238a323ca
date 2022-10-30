@@ -1,0 +1,45 @@
+{
+  "name": "rollup-preset-solid",
+  "version": "1.4.0",
+  "description": "Rollup preset for solid libraries",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "exports": {
+    "import": "./dist/esm/index.js",
+    "node": "./dist/cjs/index.js",
+    "default": "./dist/cjs/index.js",
+    "require": "./dist/cjs/index.js"
+  },
+  "types": "dist/types/index.d.ts",
+  "keywords": [
+    "rollup",
+    "preset",
+    "solidjs"
+  ],
+  "author": "Alexandre Mouton-Brady",
+  "license": "MIT",
+  "dependencies": {
+    "@babel/core": "^7.17.5",
+    "@babel/preset-env": "^7.16.11",
+    "@babel/preset-typescript": "^7.16.7",
+    "@rollup/plugin-babel": "^5.3.1",
+    "@rollup/plugin-node-resolve": "^13.1.3",
+    "babel-preset-solid": "^1.3.6",
+    "colorette": "^2.0.16",
+    "esbuild": "^0.14.23",
+    "merge-anything": "^5.0.2",
+    "rollup": "^2.68.0",
+    "rollup-plugin-terser": "^7.0.2",
+    "typescript": "^4.5.5"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.21"
+  },
+  "scripts": {
+    "build": "node build"
+  },
+  "readme": "# rollup-preset-solid\r\n\r\nA small opinionated preset for rollup to bundle your [solid](https://github.com/ryansolid/solid) libraries with rollup.\r\n\r\nFeatures out of the box:\r\n\r\n- Automatic TypeScript\r\n- Minimal - two lines config\r\n- No lock-in - you are in total control of the rollup config\r\n- Best practices for publishing solid libraries by compiling for `esm`, `cjs`, `jsx`, `umd` and `tsc`\r\n- Automatically clean `dist` fodler on build\r\n\r\n## Usage\r\n\r\n1. Install with your favorite package manager:\r\n\r\n```sh\r\nnpm install -D rollup-preset-solid rollup\r\npnpm add -D rollup-preset-solid rollup\r\nyarn add -D rollup-preset-solid rollup\r\n```\r\n\r\n2. Import `withConfig` in your `rollup.config.js`. The first and only argument is (optionally) your rollup config:\r\n\r\n```js\r\n// rollup.config.js\r\nimport withSolid from \"rollup-preset-solid\";\r\n\r\nexport default withSolid();\r\n```\r\n\r\n3. Configure your package.json\r\n\r\n```json\r\n{\r\n  \"name\": \"my-lib\",\r\n\r\n  \"// This is optional but this remove the need to manually configure the source input for rollup\": \"\",\r\n  \"source\": \"src/my-lib.tsx\",\r\n\r\n  \"// All the following properties will be hinted during build\": \"\",\r\n  \"// You will just have to copy paste them\": \"\",\r\n\r\n  \"main\": \"dist/cjs/my-lib.js\",\r\n  \"module\": \"dist/esm/my-lib.js\",\r\n  \"types\": \"dist/types/my-lib.d.ts\",\r\n  \"files\": [\"dist\"],\r\n  \"exports\": {\r\n    \".\": {\r\n      \"solid\": \"./dist/source/my-lib.jsx\",\r\n      \"import\": \"./dist/esm/my-lib.js\",\r\n      \"browser\": \"./dist/esm/my-lib.js\",\r\n      \"require\": \"./dist/cjs/my-lib.js\",\r\n      \"node\": \"./dist/cjs/my-lib.js\"\r\n    }\r\n  }\r\n}\r\n```\r\n\r\n## API\r\n\r\n### withSolid(options?: Options | Options[]): RollupOptions | RollupOptions[]\r\n\r\nThe default export. A wrapper function that accepts all of the rollup options and a few extra to configure what to generate.\r\n\r\n### Options\r\n\r\nThe options are the exact same as Rollup with a few extra that are\r\nspecific to the wrapper\r\n\r\n#### Interface\r\n\r\n```ts\r\ninterface Options extends RollupOptions {\r\n  /**\r\n   * Defines which target you want\r\n   * @default ['esm']\r\n   */\r\n  targets?: ModuleFormat[];\r\n  /**\r\n   * Whether to generate a package.json or not\r\n   * This is useful for sub packages\r\n   * @default false\r\n   */\r\n  writePackageJson?: boolean;\r\n  /**\r\n   * Whether to hint what to put in your package.json or not\r\n   * @default false\r\n   */\r\n  printInstructions?: boolean;\r\n}\r\n```\r\n\r\n#### Example\r\n\r\n```js\r\n// rollup.config.js\r\nimport withSolid from \"rollup-preset-solid\";\r\n\r\nexport default withSolid([\r\n  { input: \"browser.ts\", targets: [\"esm\"] },\r\n  { input: \"server.ts\", targets: [\"esm\", \"cjs\"], writePackageJson: true },\r\n]);\r\n```\r\n"
+}
