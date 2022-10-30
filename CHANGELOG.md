@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.2.1
+
+### Patch Changes
+
+- f964a26: fix dist
+
 ## 2.2.0
 
 ### Minor Changes
