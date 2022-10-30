@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.2.0
+
+### Minor Changes
+
+- 06762fe: feat: add support for lazy compartment extensions
+
 ## 2.1.2
 
 ### Patch Changes
