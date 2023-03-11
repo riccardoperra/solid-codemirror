@@ -33,7 +33,4 @@ function App() {
   return <div ref={ref} />;
 }
 
-for (let i = 200; i-- > 0;) {
-  console.log(i);
-  render(() => <App />, document.getElementById('root') as HTMLDivElement)();
-}
+render(() => <App />, document.getElementById('root') as HTMLDivElement)();
