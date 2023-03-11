@@ -1,4 +1,4 @@
-import { Accessor, createEffect, createSignal, lazy } from 'solid-js';
+import { Accessor, createEffect, createSignal } from 'solid-js';
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { createCompartmentExtension } from './createCompartmentExtension';

@@ -65,8 +65,8 @@ export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
       onMount(() => setEditorView(currentView));
 
       onCleanup(() => {
-        setEditorView(undefined);
         editorView()?.destroy();
+        setEditorView(undefined);
       });
     })
   );
