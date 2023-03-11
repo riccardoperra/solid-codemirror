@@ -33,4 +33,4 @@ function App() {
   return <div ref={ref} />;
 }
 
-render(() => <App />, document.getElementById('root') as HTMLDivElement)();
+render(() => <App />, document.getElementById('root') as HTMLDivElement);
