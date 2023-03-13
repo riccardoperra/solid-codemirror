@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.2.2
+
+### Patch Changes
+
+- 112c2f0: perf: fix memory leak caused by invalid destroy (#18)
+
 ## 2.2.1
 
 ### Patch Changes
