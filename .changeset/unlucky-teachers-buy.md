@@ -1,5 +1,5 @@
 ---
-'solid-codemirror': minor
+'solid-codemirror': patch
 ---
 
-Update release.yml
+chore: fix ci
