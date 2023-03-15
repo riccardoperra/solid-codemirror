@@ -1,6 +1,6 @@
 {
   "name": "solid-codemirror",
-  "version": "2.2.2",
+  "version": "2.2.3",
   "description": "CodeMirror component for SolidJS",
   "type": "module",
   "source": "src/index.tsx",

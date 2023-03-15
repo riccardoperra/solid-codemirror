@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.2.3
+
+### Patch Changes
+
+- 6a103b3: chore: fix ci
+
 ## 2.2.2
 
 ### Patch Changes
