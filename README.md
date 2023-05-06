@@ -135,7 +135,7 @@ import { createCodeMirror, createEditorReadonly } from 'solid-codemirror';
 import { createSignal } from 'solid-js';
 
 function App() {
-  const { ref } = createCodeMirror();
+  const { ref, editorView } = createCodeMirror();
   const [readOnly, setReadOnly] = createSignal(true);
   createEditorReadonly(editorView, readonly);
 
@@ -156,7 +156,7 @@ import { createSignal } from 'solid-js';
 
 function App() {
   const [code, setCode] = createSignal("console.log('hello world!')");
-  const { ref } = createCodeMirror({ onValueChange: setCode });
+  const { ref, editorView } = createCodeMirror({ onValueChange: setCode });
   createEditorControlledValue(editorView, code);
 
   // Update code after 2.5s
