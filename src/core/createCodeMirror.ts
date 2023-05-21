@@ -7,28 +7,33 @@ import {
   onMount,
 } from 'solid-js';
 import { EditorView, ViewUpdate } from '@codemirror/view';
-import { EditorState, Extension } from '@codemirror/state';
+import { EditorState, Extension, Transaction } from '@codemirror/state';
 import { createCompartmentExtension as coreCreateCompartmentExtension } from './createCompartmentExtension';
 
 export interface CreateCodeMirrorProps {
   /**
    * The initial value of the editor
    */
-  value: string;
+  value?: string;
   /**
    * Fired whenever the editor code value changes.
    */
-  onValueChange: (value: string) => void;
+  onValueChange?: (value: string) => void;
   /**
-   * Fired whenever a change occurs to the document. There is a certain difference with `onChange`.
+   * Fired whenever a change occurs to the document, every time the view updates.
    */
-  onModelViewUpdate: (vu: ViewUpdate) => void;
+  onModelViewUpdate?: (vu: ViewUpdate) => void;
+  /**
+   * Fired whenever a transaction has been dispatched to the view.
+   * Used to add external behavior to the transaction [dispatch function](https://codemirror.net/6/docs/ref/#view.EditorView.dispatch) for this editor view, which is the way updates get routed to the view
+   */
+  onTransactionDispatched?: (tr: Transaction, view: EditorView) => void;
 }
 
 /**
  * Creates a CodeMirror editor instance.
  */
-export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
+export function createCodeMirror(props?: CreateCodeMirrorProps) {
   const [ref, setRef] = createSignal<HTMLElement>();
   const [editorView, setEditorView] = createSignal<EditorView>();
 
@@ -52,8 +57,13 @@ export function createCodeMirror(props?: Partial<CreateCodeMirrorProps>) {
         state,
         parent: ref,
         // Replace the old `updateListenerExtension`
-        dispatch: (transaction) => {
+        dispatch: (transaction, editorView) => {
+          if (props?.onTransactionDispatched) {
+            props.onTransactionDispatched(transaction, editorView);
+          }
+
           currentView.update([transaction]);
+
           if (transaction.docChanged) {
             const document = transaction.state.doc;
             const value = document.toString();

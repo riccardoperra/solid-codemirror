@@ -1,4 +1,4 @@
-import { Accessor, createEffect, createSignal } from 'solid-js';
+import { Accessor, createSignal, onMount } from 'solid-js';
 import { Extension } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { createCompartmentExtension } from './createCompartmentExtension';
@@ -32,7 +32,7 @@ export function createLazyCompartmentExtension(
     setLoadedExtension(resolvedExtension);
   };
 
-  createEffect(() => {
+  onMount(() => {
     setLoading(true);
     fn()
       .then((extension) => setExtension(extension))
@@ -40,10 +40,9 @@ export function createLazyCompartmentExtension(
       .finally(() => setLoading(false));
   });
 
-  return Object.assign(reconfigure, {
-    // eslint-disable-next-line solid/reactivity
-    get loading() {
-      return loading();
+  return Object.defineProperties(reconfigure, {
+    loading: {
+      get: () => loading(),
     },
-  });
+  }) as LazyCompartmentReconfigurationCallback;
 }
