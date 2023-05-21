@@ -4,27 +4,27 @@ import { createCompartmentExtension } from '../core/createCompartmentExtension';
 
 export function createEditorFocus(
   view: Accessor<EditorView>,
-  onFocusChange?: (focused: boolean, vu: ViewUpdate) => void
+  onFocusChange?: (focused: boolean) => void
 ) {
-  const [focused, $setFocused] = createSignal(view()?.hasFocus ?? false);
+  const [focused, setInternalFocused] = createSignal(view()?.hasFocus ?? false);
 
-  const focusListener = EditorView.updateListener.of((viewUpdate) => {
-    if (viewUpdate.focusChanged) {
-      const focused = viewUpdate.view.hasFocus;
-      $setFocused(focused);
-      onFocusChange?.(focused, viewUpdate);
-    }
+  const focusListener = EditorView.focusChangeEffect.of((state, focusing) => {
+    setInternalFocused(focusing);
+    onFocusChange?.(focusing);
+    return null;
   });
 
   void createCompartmentExtension(focusListener, view);
 
+  const setFocused = (focused: boolean) => {
+    setInternalFocused(focused);
+    const viewValue = view();
+    if (!viewValue) return;
+    viewValue.focus();
+  };
+
   return {
     focused,
-    setFocused(focused: boolean) {
-      $setFocused(focused);
-      if (focused) {
-        view()?.focus();
-      }
-    },
+    setFocused,
   };
 }
