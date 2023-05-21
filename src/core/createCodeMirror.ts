@@ -27,7 +27,7 @@ export interface CreateCodeMirrorProps {
    * Fired whenever a transaction has been dispatched to the view.
    * Used to add external behavior to the transaction [dispatch function](https://codemirror.net/6/docs/ref/#view.EditorView.dispatch) for this editor view, which is the way updates get routed to the view
    */
-  onTransactionDispatched: (tr: Transaction, view: EditorView) => void;
+  onTransactionDispatched?: (tr: Transaction, view: EditorView) => void;
 }
 
 /**

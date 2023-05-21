@@ -3,7 +3,7 @@ import { EditorView, ViewUpdate } from '@codemirror/view';
 import { createCompartmentExtension } from '../core/createCompartmentExtension';
 
 export function createEditorFocus(
-  view: Accessor<EditorView>,
+  view: Accessor<EditorView | undefined>,
   onFocusChange?: (focused: boolean) => void
 ) {
   const [focused, setInternalFocused] = createSignal(view()?.hasFocus ?? false);

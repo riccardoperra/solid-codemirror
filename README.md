@@ -54,23 +54,41 @@ export default defineConfig({
 })
 ```
 
+## Versions
+
+| solid-codemirror | @codemirror/state | @codemirror/view | solid-js |
+|------------------|-------------------|------------------|----------|
+| \>=1.3.0         | ^6.2.0            | ^6.12.0          | ^1.7.0   |
+| \>=1 < 1.3.0     | ^6.0.0            | ^6.0.0           | ^1.6.0   |
+
 ## Basic Usage
 
 First, we need to create a new CodeMirror instance through the `createCodeMirror` function. Next, the given `ref`
 object must be attached to a DOM Element in order to initialize the `EditorView` instance with his own `EditorState`.
 
 ```tsx
-import { createCodeMirror } from 'solid-codemirror';
-import { createSignal, onMount } from 'solid-js';
+import { createCodeMirror } from "solid-codemirror";
+import { createSignal, onMount } from "solid-js";
 
 export const App = () => {
   const { editorView, ref: editorRef } = createCodeMirror({
-    // The initial value of the editor
+    /**
+     * The initial value of the editor
+     */
     value: "console.log('hello world!')",
-    // Fired whenever the editor code value changes.
-    onValueChange: (value) => console.log('value changed', value),
-    // Fired whenever a change occurs to the document. There is a certain difference with `onChange`.
-    onModelViewUpdate: (modelView) => console.log('modelView updated', modelView),
+    /**
+     * Fired whenever the editor code value changes.
+     */
+    onValueChange: (value) => console.log("value changed", value),
+    /**
+     * Fired whenever a change occurs to the document, every time the view updates.
+     */
+    onModelViewUpdate: (modelView) => console.log("modelView updated", modelView),
+    /**
+     * Fired whenever a transaction has been dispatched to the view.
+     * Used to add external behavior to the transaction [dispatch function](https://codemirror.net/6/docs/ref/#view.EditorView.dispatch) for this editor view, which is the way updates get routed to the view
+     */
+    onTransactionDispatched: (tr: Transaction, view: EditorView) => console.log("Transaction", tr)
   });
 
   return <div ref={editorRef} />;
@@ -80,10 +98,10 @@ export const App = () => {
 The `createCodeMirror` function is the main function of `solid-codemirror` to start creating your editor. It exposes the
 following properties:
 
-| Property     | Description                                                                                                                                                                                      |
-|--------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `ref`        | The HTMLElement object which will be attached to the EditorView instance                                                                                                                         |
-| `editorView` | The current EditorView instance of CodeMirror. Will be `null` as default, and it will be valued when the given `ref` is mounted in the DOM                                                       |
+| Property          | Description                                                                                                                                                                                      |
+|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `ref`             | The HTMLElement object which will be attached to the EditorView instance                                                                                                                         |
+| `editorView`      | The current EditorView instance of CodeMirror. Will be `null` as default, and it will be valued when the given `ref` is mounted in the DOM                                                       |
 | `createExtension` | A function to create a new extension for CodeMirror using compartments. It's a shortand for the `createCompartmentExtension` helper which automatically attaches the right `EditorView` instance |
 
 ## Modularity
