@@ -114,7 +114,7 @@ following properties:
 > you
 > to put together a bunch of pieces.
 
-As the documentation says, CodeMirror6 is modular.
+As the official documentation says, CodeMirror6 is modular.
 
 solid-codemirror **will not be a replacement** for all the modules of
 CodeMirror6, but will try to provide only the primitives necessary to integrate them in SolidJS.
