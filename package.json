@@ -17,7 +17,8 @@
       "import": "./dist/esm/index.js",
       "browser": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "node": "./dist/cjs/index.js"
+      "node": "./dist/cjs/index.js",
+      "types": "./dist/types/index.d.ts",
     }
   },
   "license": "MIT",
