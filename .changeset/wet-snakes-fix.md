@@ -1,5 +1,5 @@
 ---
-"@fake-scope/fake-pkg": patch
+"solid-codemirror": patch
 ---
 
 Fix type exports in package.json.
