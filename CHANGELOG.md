@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.3.1
+
+### Patch Changes
+
+- e3daa5a: Fix type exports in package.json.
+
 ## 2.3.0
 
 ### Minor Changes
