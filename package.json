@@ -56,6 +56,9 @@
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
     "babel-preset-solid": "^1.7.4",
+    "@codemirror/state": "^6.2.0",
+    "@codemirror/view": "^6.12.0",
+    "solid-js": "^1.7.5",
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
@@ -77,12 +80,6 @@
   },
   "engines": {
     "node": ">=14"
-  },
-  "dependencies": {
-    "@changesets/cli": "^2.26.1",
-    "@codemirror/state": "^6.2.0",
-    "@codemirror/view": "^6.12.0",
-    "solid-js": "^1.7.5"
   },
   "lint-staged": {
     "*.{js,ts}": "eslint --fix",
