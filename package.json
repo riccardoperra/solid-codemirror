@@ -13,12 +13,12 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/types/index.d.ts",
       "solid": "./dist/source/index.jsx",
       "import": "./dist/esm/index.js",
       "browser": "./dist/esm/index.js",
       "require": "./dist/cjs/index.js",
-      "node": "./dist/cjs/index.js",
-      "types": "./dist/types/index.d.ts"
+      "node": "./dist/cjs/index.js"
     }
   },
   "license": "MIT",
