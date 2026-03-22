@@ -2,7 +2,8 @@ name: Release
 
 permissions:
   id-token: write  # Required for OIDC
-  contents: read
+  contents: write
+  pull-requests: write
 
 on:
   workflow_dispatch:
@@ -18,11 +19,13 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
       - uses: pnpm/action-setup@v5
         with:
           version: 10
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 24
         uses: actions/setup-node@v6
         with:
           node-version: '24'
