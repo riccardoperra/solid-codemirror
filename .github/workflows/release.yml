@@ -1,5 +1,9 @@
 name: Release
 
+permissions:
+  id-token: write  # Required for OIDC
+  contents: read
+
 on:
   workflow_dispatch:
 
@@ -14,23 +18,15 @@ jobs:
     name: Release
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: actions/checkout@v5
+      - uses: pnpm/action-setup@v5
         with:
-          version: 7
+          version: 10
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'pnpm'
-
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          node-version: '24'
+          registry-url: 'https://registry.npmjs.org'
 
       - name: Install Dependencies
         run: pnpm install
@@ -47,4 +43,3 @@ jobs:
           publish: pnpm ci:publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
