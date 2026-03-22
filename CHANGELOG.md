@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.3.2
+
+### Patch Changes
+
+- 1d29e2d: Fix types discovery with latest versions of vite
+
 ## 2.3.1
 
 ### Patch Changes
