@@ -1,5 +1,11 @@
 # [1.1.0](https://github.com/riccardoperra/solid-codemirror/compare/v1.0.3...v1.1.0) (2022-06-12)
 
+## 2.3.3
+
+### Patch Changes
+
+- 69b5af9: Modernize tooling: tsdown, cleanup dependencies/devDependencies
+
 ## 2.3.2
 
 ### Patch Changes
