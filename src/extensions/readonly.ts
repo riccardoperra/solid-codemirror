@@ -1,29 +1,19 @@
-import { createEffect, on, untrack } from 'solid-js';
+import { EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { createCompartmentExtension } from '../core/createCompartmentExtension';
-import type { Accessor} from 'solid-js';
+import type { Accessor } from 'solid-js';
 
-function getReadOnlyExtensions(readOnly: boolean) {
-  return readOnly ? EditorView.editable.of(false) : [];
-}
+const readOnlyExtensions = [
+  EditorState.readOnly.of(true),
+  EditorView.editable.of(false),
+  EditorView.contentAttributes.of({ tabindex: '0' }),
+];
+const editableExtensions = [] as const;
 
-/**
- * Allows to change the editor readOnly state by the given `readOnly` property value
- * @param view The editor view
- * @param readOnly The editor readOnly state
- */
+/** Disables editing through the DOM and CodeMirror commands while keeping keyboard focus. */
 export function createEditorReadonly(
   view: Accessor<EditorView | undefined>,
-  readOnly: Accessor<boolean>
-) {
-  const localReadOnly = untrack(readOnly);
-
-  const reconfigure = createCompartmentExtension(
-    getReadOnlyExtensions(localReadOnly),
-    view
-  );
-
-  createEffect(
-    on(readOnly, (readOnly) => reconfigure(getReadOnlyExtensions(readOnly)))
-  );
+  readOnly: Accessor<boolean>,
+): void {
+  createCompartmentExtension(() => (readOnly() ? readOnlyExtensions : editableExtensions), view);
 }

@@ -1,10 +1,8 @@
 import { defineConfig } from 'tsdown';
-import solid from 'unplugin-solid/rolldown';
 
 export default defineConfig({
-  entry: ['./src/index.tsx'],
+  entry: './src/index.ts',
   platform: 'neutral',
-  dts: true,
-  plugins: [solid()],
+  dts: { generator: 'oxc' },
   unbundle: true,
 });

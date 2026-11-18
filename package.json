@@ -3,7 +3,7 @@
   "version": "2.3.3",
   "description": "CodeMirror component for SolidJS",
   "type": "module",
-  "source": "src/index.tsx",
+  "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "private": false,
   "files": [
@@ -25,15 +25,18 @@
   },
   "scripts": {
     "build": "tsdown",
-    "dev": "cd dev && vite dev",
-    "lint": "eslint .",
-    "publint": "pn dlx publint",
+    "dev": "pnpm build && pnpm --filter dev dev",
+    "lint": "oxlint .",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p dev",
+    "test": "pnpm build && vitest run",
+    "publint": "publint",
+    "check": "pnpm lint && pnpm test && pnpm typecheck && pnpm publint",
     "changeset": "changeset",
-    "version-packages": "changeset version && pn i",
-    "build-test": "pn build && pnpm test && pn typecheck --filter=!./playgrounds/*",
+    "version-packages": "changeset version && pnpm install --lockfile-only",
     "release": "changeset publish",
     "ci:publish": "changeset publish",
-    "ci:version": "changeset version"
+    "ci:version": "pnpm version-packages",
+    "format": "oxfmt src dev/src tests *.config.ts dev/vite.config.ts"
   },
   "keywords": [
     "solidjs",
@@ -47,38 +50,29 @@
     "code"
   ],
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
-    "@tanstack/eslint-config": "^0.4.0",
-    "@testing-library/jest-dom": "^5.16.5",
-    "@typescript-eslint/eslint-plugin": "^5.59.6",
-    "@typescript-eslint/parser": "^5.59.6",
-    "eslint": "^10.3.0",
-    "eslint-config-prettier": "^8.8.0",
-    "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-solid": "^0.4.7",
-    "jsdom": "^19.0.0",
-    "prettier": "^3.8.3",
-    "tsdown": "^0.22.0",
-    "typescript": "^6.0.3",
-    "unplugin-solid": "^1.0.0",
-    "vite": "^8.0.12",
-    "vite-plugin-solid": "^2.11.12"
+    "@changesets/changelog-git": "^1.0.0",
+    "@changesets/cli": "^3.0.3",
+    "@codemirror/state": "^6.7.6",
+    "@codemirror/view": "^6.43.15",
+    "@types/node": "^24.19.2",
+    "@vitest/browser-playwright": "^5.1.1",
+    "oxfmt": "^0.79.0",
+    "oxlint": "^1.94.0",
+    "playwright": "^1.65.1",
+    "publint": "^0.3.25",
+    "solid-js": "^2.0.1",
+    "tsdown": "^0.23.7",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8",
+    "vitest": "^5.1.1"
   },
   "peerDependencies": {
     "@codemirror/state": "^6.6.0",
     "@codemirror/view": "^6.40.0",
-    "solid-js": "^1.7.0"
+    "solid-js": "^2.0.0"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=22.12.0"
   },
-  "dependencies": {
-    "@codemirror/state": "^6.2.0",
-    "@codemirror/view": "^6.12.0",
-    "solid-js": "^1.7.5"
-  },
-  "lint-staged": {
-    "*.{js,ts}": "eslint --fix",
-    "*.{js,css,json,md,jsx,yml,yaml}": "prettier --ignore-path .gitignore --write"
-  }
+  "packageManager": "pnpm@12.21.0"
 }

@@ -1,52 +1,47 @@
 import { createSignal } from 'solid-js';
-import { render } from 'solid-js/web';
-import {
-  createCodeMirror,
-  createLazyCompartmentExtension,
-} from 'solid-codemirror';
+import { render } from '@solidjs/web';
+import { createCodeMirror, createEditorReadonly } from 'solid-codemirror';
 import { EditorView, lineNumbers } from '@codemirror/view';
 
+const theme = EditorView.theme(
+  {
+    '&': { color: 'white', backgroundColor: '#034' },
+  },
+  { dark: true },
+);
+
 function App() {
-  const [, setCode] = createSignal("console.log('hello world!')");
-  const [showLineNumber, setShowLineNumber] = createSignal(true);
+  const [showLineNumbers, setShowLineNumbers] = createSignal(true);
+  const [readOnly, setReadOnly] = createSignal(false);
   const { editorView, ref, createExtension } = createCodeMirror({
-    onTransactionDispatched: (tr, state) => {
-      console.log('Transaction dispatched: ', tr, state);
-    },
-    onValueChange: (value) => console.log('Value change: ', value),
+    value: "console.log('hello world!')",
+    extensions: theme,
   });
 
-  const theme = EditorView.theme(
-    {
-      '&': {
-        color: 'white',
-        backgroundColor: '#034',
-      },
-    },
-    { dark: true }
-  );
-
-  createExtension(theme);
-
-  // Toggle extension
-  createExtension(() => (showLineNumber() ? lineNumbers() : []));
-
-  const stat = createLazyCompartmentExtension(async () => {
-    await new Promise((r) => setTimeout(r, 3000));
-    return [];
-  }, editorView);
-
-  // Remove line numbers after 2.5s
-  setTimeout(() => {
-    setShowLineNumber(false);
-  }, 2500);
+  createExtension(() => (showLineNumbers() ? lineNumbers() : []));
+  createEditorReadonly(editorView, readOnly);
 
   return (
     <>
-      {stat.loading && <>Loading...</>}
+      <label>
+        <input
+          type="checkbox"
+          checked={showLineNumbers()}
+          onChange={(event) => setShowLineNumbers(event.currentTarget.checked)}
+        />
+        Line numbers
+      </label>
+      <label>
+        <input
+          type="checkbox"
+          checked={readOnly()}
+          onChange={(event) => setReadOnly(event.currentTarget.checked)}
+        />
+        Read only
+      </label>
       <div ref={ref} />
     </>
   );
 }
 
-render(() => <App />, document.getElementById('root') as HTMLDivElement);
+render(() => <App />, document.getElementById('root')!);

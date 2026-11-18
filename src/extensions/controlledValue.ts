@@ -1,34 +1,19 @@
-import { createEffect, createMemo, on } from 'solid-js';
-import type { Accessor} from 'solid-js';
+import { createEffect } from 'solid-js';
+import type { Accessor } from 'solid-js';
 import type { EditorView } from '@codemirror/view';
 
-/**
- * Makes the view state value controlled.
- * @param view The editor view.
- * @param code The editor code. Whenever this value change, the editor view state will be updated automatically
- */
+/** Synchronizes a view's document with a reactive value. */
 export function createEditorControlledValue(
   view: Accessor<EditorView | undefined>,
-  code: Accessor<string | undefined | null>
+  code: Accessor<string | undefined | null>,
 ): void {
-  const memoizedCode = createMemo(code);
-
   createEffect(
-    on(view, (view) => {
-      if (!view) return;
-      createEffect(
-        on(memoizedCode, (code) => {
-          const localValue = view.state.doc.toString();
-          if (localValue === code) return;
-          view.dispatch({
-            changes: {
-              from: 0,
-              to: localValue.length,
-              insert: code ?? '',
-            },
-          });
-        })
-      );
-    })
+    () => [view(), code() ?? ''] as const,
+    ([view, code]) => {
+      if (!view || view.state.doc.toString() === code) return;
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: code },
+      });
+    },
   );
 }

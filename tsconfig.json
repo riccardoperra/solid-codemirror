@@ -4,11 +4,7 @@
     "target": "ESNext",
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "jsx": "preserve",
-    "jsxImportSource": "solid-js",
-    "types": ["vite/client"]
+    "types": ["node"]
   },
-  "include": ["src", "dev", "prettier.config.js", "eslint.config.js"]
+  "include": ["src", "tests", "tsdown.config.ts", "vitest.config.ts"]
 }
