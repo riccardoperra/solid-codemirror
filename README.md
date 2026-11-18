@@ -18,18 +18,10 @@ of [CodeImage](https://github.com/riccardoperra/codeimage).
 ## Installation
 
 ```bash
-# pnpm
-> pnpm add solid-codemirror
-# or yarn
-> yarn add solid-codemirror
-# or npm
-> npm i solid-codemirror
+pnpm add solid-codemirror solid-js @codemirror/state @codemirror/view
 ```
 
-> **Note** This library depends on [@codemirror/state](https://github.com/codemirror/state)
-> and [@codemirror/view](https://github.com/codemirror/state) v6.0.0. These libraries are flagged as **
-> peerDependencies**.
-> It's recommended to manually install both of them to have more control and flexibility for implementation
+Solid and CodeMirror are peer dependencies. Use one copy of each in your app.
 
 ### CodeMirror packages error fix
 
@@ -57,52 +49,49 @@ export default defineConfig({
 ## Versions
 
 | solid-codemirror | @codemirror/state | @codemirror/view | solid-js |
-|------------------|-------------------|------------------|----------|
-| \>=1.3.0         | ^6.2.0            | ^6.12.0          | ^1.7.0   |
-| \>=1 < 1.3.0     | ^6.0.0            | ^6.0.0           | ^1.6.0   |
+| ---------------- | ----------------- | ---------------- | -------- |
+| 3.x              | ^6.6.0            | ^6.40.0          | ^2.0.0   |
+| 2.3.x            | ^6.6.0            | ^6.40.0          | ^1.7.0   |
 
-## Basic Usage
+For a Solid 2 app built with Vite, use `@solidjs/web` and `@solidjs/vite-plugin`.
+Follow the [migration guide](./MIGRATION.md) to update an existing editor from solid-codemirror 2.x.
 
-First, we need to create a new CodeMirror instance through the `createCodeMirror` function. Next, the given `ref`
-object must be attached to a DOM Element in order to initialize the `EditorView` instance with his own `EditorState`.
+## Basic usage
+
+Create an editor with `createCodeMirror` and attach its `ref` to a host element.
 
 ```tsx
-import { createCodeMirror } from "solid-codemirror";
-import { createSignal, onMount } from "solid-js";
+import { createCodeMirror } from 'solid-codemirror';
 
-export const App = () => {
-  const { editorView, ref: editorRef } = createCodeMirror({
-    /**
-     * The initial value of the editor
-     */
-    value: "console.log('hello world!')",
-    /**
-     * Fired whenever the editor code value changes.
-     */
-    onValueChange: (value) => console.log("value changed", value),
-    /**
-     * Fired whenever a change occurs to the document, every time the view updates.
-     */
-    onModelViewUpdate: (modelView) => console.log("modelView updated", modelView),
-    /**
-     * Fired whenever a transaction has been dispatched to the view.
-     * Used to add external behavior to the transaction [dispatch function](https://codemirror.net/6/docs/ref/#view.EditorView.dispatch) for this editor view, which is the way updates get routed to the view
-     */
-    onTransactionDispatched: (tr: Transaction, view: EditorView) => console.log("Transaction", tr)
-  });
-
-  return <div ref={editorRef} />;
-};
+export function App() {
+  const { ref } = createCodeMirror({ value: "console.log('hello world!')" });
+  return <div ref={ref} />;
+}
 ```
 
-The `createCodeMirror` function is the main function of `solid-codemirror` to start creating your editor. It exposes the
-following properties:
+| Return value | Use it to… |
+| --- | --- |
+| `ref` | Attach the editor to a host element. |
+| `editorView` | Read the native CodeMirror view. It returns `undefined` until the host is assigned and Solid flushes the update. |
+| `createExtension` | Add a compartment for configuration that can change. |
+| `setEditorState` | Switch documents and retrieve the outgoing state. |
 
-| Property          | Description                                                                                                                                                                                      |
-|-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `ref`             | The HTMLElement object which will be attached to the EditorView instance                                                                                                                         |
-| `editorView`      | The current EditorView instance of CodeMirror. Will be `null` as default, and it will be valued when the given `ref` is mounted in the DOM                                                       |
-| `createExtension` | A function to create a new extension for CodeMirror using compartments. It's a shortand for the `createCompartmentExtension` helper which automatically attaches the right `EditorView` instance |
+Pass `extensions` to `createCodeMirror` for fields and plugins that must be
+installed as soon as the view is available. Pass reactive configuration to
+[`createExtension`](#handle-custom-extensions). The library tracks the accessor
+for you.
+
+`value` seeds each new view. Use `createEditorControlledValue` for later external
+text changes. When the document and a state field must change together, dispatch
+one CodeMirror transaction with both `changes` and `effects`.
+
+### Switch documents in one editor
+
+Keep an `EditorState` for each document and call `setEditorState(nextState)` when
+the active document changes. The method returns the outgoing state so you can
+store its document, selection, history, and custom state fields. It applies the
+view's current extensions and managed compartments to the incoming state
+before displaying it. A state swap does not emit `onValueChange`.
 
 ## Modularity
 
@@ -127,10 +116,7 @@ Each extension which you need to develop your editor **must be** installed indiv
 
 ```ts
 import { createCodeMirror, createEditorFocus } from 'solid-codemirror';
-import { createSignal } from 'solid-js';
-
 const { editorView } = createCodeMirror();
-const [readOnly, setReadOnly] = createSignal(true);
 const {
   focused,
   setFocused
@@ -144,9 +130,8 @@ setFocused(false);
 
 ### Update editor readonly state
 
-After the CodeMirror editor is mounted, you can update its readonly state using the
-`createReadonlyEditor` function that accept the editor view and the readOnly accessor.
-> **Note** Updating the accessor, the editor readOnly state will be updated automatically;
+Pass a boolean accessor to `createEditorReadonly` to control read-only mode.
+The editor stays keyboard focusable. Programmatic transactions can still update it.
 
 ```typescript jsx
 import { createCodeMirror, createEditorReadonly } from 'solid-codemirror';
@@ -155,7 +140,7 @@ import { createSignal } from 'solid-js';
 function App() {
   const { ref, editorView } = createCodeMirror();
   const [readOnly, setReadOnly] = createSignal(true);
-  createEditorReadonly(editorView, readonly);
+  createEditorReadonly(editorView, readOnly);
 
   return <div ref={ref} />
 }
@@ -165,8 +150,6 @@ function App() {
 
 After CodeMirror editor is mounted, you can control the code state using the
 `createEditorControlledValue`.
-
-> **Note** The value of the editor is already memoized
 
 ```typescript jsx
 import { createCodeMirror, createEditorControlledValue } from 'solid-codemirror';
@@ -186,86 +169,107 @@ function App() {
 }
 ```
 
+Pass `{ notify: false }` as the third argument to apply external values without
+echoing them through `onValueChange`. To tag a custom transaction, add
+`ExternalChange.of(true)` to its annotations. Transaction and view observers
+still receive the update. A batch containing any untagged document change emits
+its final document once. Undo history is configured separately through
+CodeMirror's `Transaction.addToHistory` annotation.
+
 ### Handle custom extensions
 
-After CodeMirror editor is mounted, you can handle custom extensions thanks to the
-`createExtension` function. It both accept an `Extension` or `Accessor<Extension | undefined>` then
-it will be automatically reconfigured when the extension changes. Otherwise, you can manually reconfigure them using
-the returned `reconfigure` function.
+A compartment is a slot in CodeMirror's configuration. Each `createExtension`
+call creates one compartment. Pass an accessor to let Solid track its
+dependencies. When the accessor returns a different extension, solid-codemirror
+reconfigures that slot. You can call `createExtension` directly during component
+setup. The library creates the effect.
 
-For more details, see the official documentation about [compartments](https://codemirror.net/examples/reconfigure).
-
-```typescript jsx
+```tsx
 import { createCodeMirror } from 'solid-codemirror';
 import { createSignal } from 'solid-js';
 import { EditorView, lineNumbers } from '@codemirror/view';
 
-function App() {
-  const [code, setCode] = createSignal("console.log('hello world!')");
-  const [showLineNumber, setShowLineNumber] = createSignal(true);
-  const { ref, createExtension } = createCodeMirror({ onValueChange: setCode });
+const darkTheme = EditorView.theme(
+  { '&': { color: '#f5f7ff', backgroundColor: '#202635' } },
+  { dark: true },
+);
 
-  const theme = EditorView.theme({
-    '&': {
-      background: 'red'
-    }
-  });
+export function App() {
+  const [showLineNumbers, setShowLineNumbers] = createSignal(true);
+  const [dark, setDark] = createSignal(false);
+  const { ref, createExtension } = createCodeMirror({ value: 'const answer = 42;' });
 
-  // Add a static custom theme
-  createExtension(theme);
+  createExtension(() => (showLineNumbers() ? lineNumbers() : []));
+  createExtension(() => (dark() ? darkTheme : []));
 
-  // Toggle extension
-  createExtension(() => showLineNumber() ? lineNumbers() : []);
-
-  // Remove line numbers after 2.5s
-  setTimeout(() => {
-    setShowLineNumber(false);
-  }, 2500);
-
-  return <div ref={ref} />
+  return (
+    <>
+      <button type="button" onClick={() => setShowLineNumbers((show) => !show)}>
+        Toggle line numbers
+      </button>
+      <button type="button" onClick={() => setDark((enabled) => !enabled)}>
+        Toggle theme
+      </button>
+      <div ref={ref} />
+    </>
+  );
 }
 ```
+
+The two calls above update independently. To replace several extensions
+together, return them in an array from one accessor. Return `[]` or `undefined`
+to clear the compartment. To replace its contents manually, call the function
+returned by `createExtension`. The replacement lasts until the accessor
+returns a different extension. [CodeMirror compartments](https://codemirror.net/docs/ref/#state.Compartment)
 
 ### Lazy loading extensions
 
-Sometimes you may need to better split your custom extensions in order to reduce the initial bundle size.
-This is the case where you need to use dynamic imports in order to resolve the module in lazy loading.
+For a language that changes with reactive inputs, create a Solid 2 async memo
+and pass its accessor to `createExtension`. Give the memo a `loadingValue` of
+`[]` to show an editor before the first language loads.
+[Reactive language example](./MIGRATION.md#5-load-extensions-asynchronously)
+
+For a one-time dynamic import, pass the loader and the view accessor to
+`createLazyCompartmentExtension`. Read `loading` to show progress.
 
 ```tsx
-// ✅ 1. Remove the static import
-// import { largeExtension } from './large-extension';
-import { createLazyCompartmentExtension } from './createLazyCompartmentExtension';
-import { Show } from 'solid-js';
+import { createCodeMirror, createLazyCompartmentExtension } from 'solid-codemirror';
 
 function App() {
-  const [code, setCode] = createSignal("console.log('hello world!')");
-  const { ref, createExtension } = createCodeMirror({ onValueChange: setCode });
-
-  // ✅ 2. Call the helper providing a Promise<Extension>
-  // The extension will be configured only after the Promise resolves
-  const largeExt = createLazyCompartmentExtension(
-    () => import('./large-extension').then(res => res.largeExtension)
+  const { ref, editorView } = createCodeMirror();
+  const language = createLazyCompartmentExtension(
+    () => import('@codemirror/lang-javascript').then(({ javascript }) => javascript()),
+    editorView,
   );
 
   return (
-    <div>
+    <>
+      {language.loading && <p>Loading language…</p>}
       <div ref={ref} />
-      {/*✅ 3. You can read the pending state of the Promise*/}
-      <Show when={largeExt.loading}>
-        Loading...
-      </Show>
-    </div>
-  )
+    </>
+  );
 }
 ```
 
-## Demo
+Install `@codemirror/lang-javascript` to run this example.
 
-// WIP
+## Development
 
-You can also view an advanced implementation of `solid-codemirror`
-through [CodeImage](https://github.com/riccardoperra/codeimage/blob/main/apps/codeimage/src/components/CustomEditor/CustomEditor.tsx)
-implementation
+Use Node.js 24 and the pnpm version pinned in `package.json`.
+
+```bash
+pnpm install
+pnpm exec playwright install chromium
+pnpm check
+pnpm dev
+```
+
+The playground consumes the built package. Run `pnpm build` after changing library code.
+
+Type in tab A, move the cursor, then open B and change the theme. Return to A to
+see your text and cursor under the new theme. Undo to check that A kept its
+history. An external update appears in the event log without incrementing the
+save counter. Format trims trailing whitespace as one undoable edit.
 
 ## Author
 

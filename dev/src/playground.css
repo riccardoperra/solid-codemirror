@@ -1,0 +1,70 @@
+:root {
+  color: #22283a;
+  background: #f4f6fa;
+  font:
+    15px/1.5 system-ui,
+    sans-serif;
+}
+
+main {
+  max-width: 56rem;
+  margin: 3rem auto;
+  padding: 0 1rem;
+}
+
+h1 {
+  font-size: 1.75rem;
+}
+
+h2 {
+  font-size: 1.1rem;
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.85rem 0;
+}
+
+.toolbar label {
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+button {
+  border: 1px solid #adb5c6;
+  border-radius: 0.3rem;
+  background: white;
+  color: inherit;
+  font: inherit;
+  padding: 0.25rem 0.65rem;
+}
+
+button[aria-pressed='true'] {
+  color: white;
+  background: #314984;
+  border-color: #314984;
+}
+
+button:disabled {
+  opacity: 0.5;
+}
+
+.editor {
+  border: 1px solid #adb5c6;
+  border-radius: 0.3rem;
+  background: white;
+  overflow: hidden;
+}
+
+.cm-editor {
+  min-height: 14rem;
+}
+
+.events {
+  min-height: 3rem;
+  padding-inline-start: 1.5rem;
+}

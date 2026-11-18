@@ -1,8 +1,11 @@
 import { Compartment, StateEffect } from '@codemirror/state';
-import { createEffect, on } from 'solid-js';
-import type { Extension} from '@codemirror/state';
+import { createEffect } from 'solid-js';
+import { viewExtension } from './viewConfiguration';
+import type { Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
-import type { Accessor} from 'solid-js';
+import type { Accessor } from 'solid-js';
+
+const empty: Extension = [];
 
 export type CompartmentReconfigurationCallback = (extension: Extension) => void;
 
@@ -20,36 +23,35 @@ export type CompartmentReconfigurationCallback = (extension: Extension) => void;
  */
 export function createCompartmentExtension(
   extension: Accessor<Extension | undefined> | Extension,
-  view: Accessor<EditorView | undefined>
+  view: Accessor<EditorView | undefined>,
 ): CompartmentReconfigurationCallback {
   const compartment = new Compartment();
+  const readExtension = typeof extension === 'function' ? extension : () => extension;
+  let override: Extension | undefined;
 
-  const reconfigure = (extension: Extension) => {
-    view()?.dispatch({
-      effects: compartment.reconfigure(extension),
+  function apply(view: EditorView, extension: Extension) {
+    const installed = compartment.get(view.state);
+    if (installed === extension) return;
+
+    view.dispatch({
+      effects:
+        installed === undefined
+          ? StateEffect.appendConfig.of(viewExtension(compartment, extension))
+          : compartment.reconfigure(extension),
     });
-  };
-
-  const $extension =
-    typeof extension === 'function' ? extension : () => extension;
+  }
 
   createEffect(
-    on(
-      [view, $extension],
-      ([view, extension]) => {
-        if (view && extension) {
-          if (compartment.get(view.state)) {
-            reconfigure(extension);
-          } else {
-            view.dispatch({
-              effects: StateEffect.appendConfig.of(compartment.of(extension)),
-            });
-          }
-        }
-      },
-      { defer: true }
-    )
+    () => [view(), readExtension()] as const,
+    ([view, extension], previous) => {
+      if (previous && previous[1] !== extension) override = undefined;
+      if (view) apply(view, override ?? extension ?? empty);
+    },
   );
 
-  return reconfigure;
+  return (extension) => {
+    override = extension;
+    const currentView = view();
+    if (currentView) apply(currentView, extension);
+  };
 }

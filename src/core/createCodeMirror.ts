@@ -1,111 +1,88 @@
-import {
-  createEffect,
-  createSignal,
-  on,
-  onCleanup,
-  onMount
-} from 'solid-js';
+import { Compartment, EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { EditorState } from '@codemirror/state';
-import { createCompartmentExtension as coreCreateCompartmentExtension } from './createCompartmentExtension';
+import { createEffect, createSignal } from 'solid-js';
+import {
+  createCompartmentExtension,
+  type CompartmentReconfigurationCallback,
+} from './createCompartmentExtension';
+import { ExternalChange } from './externalChange';
+import { applyViewConfiguration, viewExtension } from './viewConfiguration';
 import type { Extension, Transaction } from '@codemirror/state';
 import type { ViewUpdate } from '@codemirror/view';
-import type {
-  Accessor
-} from 'solid-js';
+import type { Accessor, Setter } from 'solid-js';
 
 export interface CreateCodeMirrorProps {
-  /**
-   * The initial value of the editor
-   */
+  /** Initial document for each new view. */
   value?: string;
-  /**
-   * Fired whenever the editor code value changes.
-   */
+  /** Extensions installed in the initial state, before the view is exposed. */
+  extensions?: Extension;
+  /** Called with the final document after a dispatch changes it. */
   onValueChange?: (value: string) => void;
-  /**
-   * Fired whenever a change occurs to the document, every time the view updates.
-   */
-  onModelViewUpdate?: (vu: ViewUpdate) => void;
-  /**
-   * Fired whenever a transaction has been dispatched to the view.
-   * Used to add external behavior to the transaction [dispatch function](https://codemirror.net/6/docs/ref/#view.EditorView.dispatch) for this editor view, which is the way updates get routed to the view
-   */
-  onTransactionDispatched?: (tr: Transaction, view: EditorView) => void;
+  /** Called after each view update. */
+  onModelViewUpdate?: (update: ViewUpdate) => void;
+  /** Called for each transaction before CodeMirror applies the dispatch. */
+  onTransactionDispatched?: (transaction: Transaction, view: EditorView) => void;
 }
 
-/**
- * Creates a CodeMirror editor instance.
- */
-export function createCodeMirror(props?: CreateCodeMirrorProps) {
-  const [ref, setRef] = createSignal<HTMLElement>();
+/** Creates a CodeMirror view when a host element is assigned to `ref`. */
+export function createCodeMirror(props?: CreateCodeMirrorProps): {
+  readonly editorView: Accessor<EditorView | undefined>;
+  readonly ref: Setter<HTMLElement | undefined>;
+  /** Switches documents and returns the previous state if a view is mounted. */
+  readonly setEditorState: (state: EditorState) => EditorState | undefined;
+  readonly createExtension: (
+    extension: Extension | Accessor<Extension | undefined>,
+  ) => CompartmentReconfigurationCallback;
+} {
+  const configuration = new Compartment();
+  const [host, setHost] = createSignal<HTMLElement>();
   const [editorView, setEditorView] = createSignal<EditorView>();
 
-  function localCreateCompartmentExtension(
-    extension: Extension | Accessor<Extension | undefined>
-  ) {
-    return coreCreateCompartmentExtension(extension, editorView);
-  }
+  createEffect(host, (parent) => {
+    if (!parent) return;
 
-  const updateListener = EditorView.updateListener.of((vu) =>
-    props?.onModelViewUpdate?.(vu)
-  );
-
-  localCreateCompartmentExtension(updateListener);
-
-  createEffect(
-    on(ref, (ref) => {
-      const state = EditorState.create({ doc: props?.value ?? '' });
-      const currentView = new EditorView({
-        state,
-        parent: ref,
-        // Replace the old `updateListenerExtension`
-        dispatch: (transaction, editorView) => {
-          if (props?.onTransactionDispatched) {
-            props.onTransactionDispatched(transaction, editorView);
-          }
-
-          currentView.update([transaction]);
-
-          if (transaction.docChanged) {
-            const document = transaction.state.doc;
-            const value = document.toString();
-            props?.onValueChange?.(value);
-          }
+    const view = new EditorView({
+      parent,
+      state: EditorState.create({
+        doc: props?.value,
+        extensions: viewExtension(configuration, [
+          EditorView.updateListener.of((update) => props?.onModelViewUpdate?.(update)),
+          props?.extensions ?? [],
+        ]),
+      }),
+      dispatchTransactions(transactions, view) {
+        for (const transaction of transactions) {
+          props?.onTransactionDispatched?.(transaction, view);
         }
-      });
-
-      onMount(() => setEditorView(currentView));
-
-      onCleanup(() => {
-        editorView()?.destroy();
-        setEditorView(undefined);
-      });
-    })
-  );
-
-  createEffect(
-    on(
-      editorView,
-      (editorView) => {
-        const localValue = editorView?.state.doc.toString();
-        if (localValue !== props?.value && !!editorView) {
-          editorView.dispatch({
-            changes: {
-              from: 0,
-              to: localValue?.length,
-              insert: props?.value ?? ''
-            }
-          });
+        view.update(transactions);
+        if (
+          transactions.some(
+            (transaction) => transaction.docChanged && !transaction.annotation(ExternalChange),
+          )
+        ) {
+          props?.onValueChange?.(view.state.doc.toString());
         }
       },
-      { defer: true }
-    )
-  );
+    });
+    setEditorView(view);
 
-  return {
-    editorView,
-    ref: setRef,
-    createExtension: localCreateCompartmentExtension
-  } as const;
+    return () => {
+      view.destroy();
+      setEditorView(undefined);
+    };
+  });
+
+  function createExtension(extension: Extension | Accessor<Extension | undefined>) {
+    return createCompartmentExtension(extension, editorView);
+  }
+
+  function setEditorState(state: EditorState): EditorState | undefined {
+    const view = editorView();
+    if (!view) return;
+    const previous = view.state;
+    if (state !== previous) view.setState(applyViewConfiguration(previous, state));
+    return previous;
+  }
+
+  return { editorView, ref: setHost, createExtension, setEditorState } as const;
 }

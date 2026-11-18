@@ -1,31 +1,32 @@
-import { createSignal } from 'solid-js';
+import { createEffect, createSignal } from 'solid-js';
 import { EditorView } from '@codemirror/view';
 import { createCompartmentExtension } from '../core/createCompartmentExtension';
-import type { Accessor} from 'solid-js';
+import type { Accessor } from 'solid-js';
 
 export function createEditorFocus(
   view: Accessor<EditorView | undefined>,
-  onFocusChange?: (focused: boolean) => void
-) {
-  const [focused, setInternalFocused] = createSignal(view()?.hasFocus ?? false);
+  onFocusChange?: (focused: boolean) => void,
+): { focused: Accessor<boolean>; setFocused: (focused: boolean) => void } {
+  const [focused, setInternalFocused] = createSignal(false);
 
-  const focusListener = EditorView.focusChangeEffect.of((state, focusing) => {
-    setInternalFocused(focusing);
-    onFocusChange?.(focusing);
-    return null;
+  createEffect(view, (view) => {
+    setInternalFocused(view?.hasFocus ?? false);
   });
 
-  void createCompartmentExtension(focusListener, view);
+  const focusListener = EditorView.updateListener.of((update) => {
+    if (!update.focusChanged) return;
+    const focused = update.view.hasFocus;
+    setInternalFocused(focused);
+    onFocusChange?.(focused);
+  });
+
+  createCompartmentExtension(focusListener, view);
 
   const setFocused = (focused: boolean) => {
-    setInternalFocused(focused);
-    const viewValue = view();
-    if (!viewValue) return;
-    viewValue.focus();
+    const current = view();
+    if (focused) current?.focus();
+    else current?.contentDOM.blur();
   };
 
-  return {
-    focused,
-    setFocused,
-  };
+  return { focused, setFocused };
 }

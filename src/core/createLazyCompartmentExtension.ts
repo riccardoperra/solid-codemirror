@@ -1,49 +1,46 @@
-import { createSignal, onMount } from 'solid-js';
+import { createSignal, onSettled } from 'solid-js';
 import { createCompartmentExtension } from './createCompartmentExtension';
-import type { Accessor} from 'solid-js';
+import type { CompartmentReconfigurationCallback } from './createCompartmentExtension';
+import type { Accessor } from 'solid-js';
 import type { Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 
-export type LazyCompartmentReconfigurationCallback = {
-  loading: boolean;
-} & ((extension: Extension) => void);
+export type LazyCompartmentReconfigurationCallback = CompartmentReconfigurationCallback & {
+  readonly loading: boolean;
+};
 
-/**
- * Creates a lazy compartment extension for the given CodeMirror EditorView,
- * configured only after the Promise will be resolved.
- **
- * See {@link https://codemirror.net/examples/reconfigure/} for use cases and examples of `Compartments`.
- * Check out {@link https://codemirror.net/docs/ref/#state.Compartment} for more details about Compartment API.
- *
- * @param fn The Promise callback that will return the extension once resolved.
- * @param view The CodeMirror EditorView
- */
+/** Loads an extension once after setup and keeps it configured across view changes. */
 export function createLazyCompartmentExtension(
-  fn: () => Promise<Extension | null | undefined>,
-  view: Accessor<EditorView | undefined>
+  load: () => Promise<Extension | null | undefined>,
+  view: Accessor<EditorView | undefined>,
 ): LazyCompartmentReconfigurationCallback {
-  const [loadedExtension, setLoadedExtension] = createSignal<Extension>([]);
+  const empty: Extension = [];
   const [loading, setLoading] = createSignal(false);
+  const reconfigure = createCompartmentExtension(empty, view);
 
-  const reconfigure = createCompartmentExtension(() => loadedExtension(), view);
-
-  const setExtension = (extension: Extension | null | undefined) => {
-    const resolvedExtension = extension ?? [];
-    reconfigure(resolvedExtension);
-    setLoadedExtension(resolvedExtension);
-  };
-
-  onMount(() => {
+  onSettled(() => {
+    let disposed = false;
     setLoading(true);
-    fn()
-      .then((extension) => setExtension(extension))
-      .catch(() => setExtension(null))
-      .finally(() => setLoading(false));
+
+    async function loadExtension() {
+      let extension: Extension | null | undefined;
+      try {
+        extension = await load();
+      } catch {
+        extension = empty;
+      }
+      if (disposed) return;
+      reconfigure(extension ?? empty);
+      setLoading(false);
+    }
+
+    void loadExtension();
+    return () => {
+      disposed = true;
+    };
   });
 
-  return Object.defineProperties(reconfigure, {
-    loading: {
-      get: () => loading(),
-    },
+  return Object.defineProperty(reconfigure, 'loading', {
+    get: loading,
   }) as LazyCompartmentReconfigurationCallback;
 }

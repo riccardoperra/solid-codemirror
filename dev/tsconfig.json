@@ -1,15 +1,9 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
-    "noUnusedLocals": true,
-    "moduleResolution": "bundler",
-    "sourceMap": true,
     "jsx": "preserve",
-    "resolveJsonModule": true,
-    "jsxImportSource": "solid-js",
-    "preserveSymlinks": true,
-    "types": [
-      "@types/node"
-    ]
+    "jsxImportSource": "@solidjs/web",
+    "types": ["node", "vite/client"]
   },
+  "include": ["src", "vite.config.ts"]
 }
