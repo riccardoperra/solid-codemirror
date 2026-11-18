@@ -33,8 +33,19 @@ extensions resolve the same copies of `@codemirror/state` and
 ## 2. Attach the host and configure the editor
 
 Keep attaching `ref` to the host element. Read `editorView()` after Solid
-flushes the update. If you need to run setup when a view becomes available,
-observe the accessor with Solid 2's `createEffect(editorView, callback)`.
+flushes the update. For configuration that follows signals or props, pass an
+accessor to `createExtension`. The library creates the effect. For other
+app-specific work that depends on view creation, observe the accessor with
+Solid 2's `createEffect(editorView, callback)`.
+
+If you used an effect to replace an extension manually, pass the accessor
+itself. The compartment reconfigures when the accessor's value changes.
+
+```diff
+- const reconfigure = createExtension(config());
+- createEffect(on(config, reconfigure));
++ createExtension(config);
+```
 
 Move any fields or plugins that must exist at startup into
 `createCodeMirror({ extensions })`. Pass an accessor to `createExtension` for
