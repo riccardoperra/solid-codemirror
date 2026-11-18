@@ -1,7 +1,7 @@
 import { history, isolateHistory, undo } from '@codemirror/commands';
 import { Facet, StateField, EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
-import { createRoot, createSignal, flush } from 'solid-js';
+import { createMemo, createRoot, createSignal, flush } from 'solid-js';
 import { afterEach, expect, test, vi } from 'vitest';
 import {
   ExternalChange,
@@ -320,4 +320,40 @@ test('keeps undo history per document and records formatting as one step', () =>
     'first  ',
     'second',
   ]);
+});
+
+test('installs resolved async extensions and keeps the latest selection', async () => {
+  const parent = host();
+  const language = Facet.define<string>();
+  const first = Promise.withResolvers<string>();
+  const stale = Promise.withResolvers<string>();
+  const last = Promise.withResolvers<string>();
+  const [load, setLoad] = createSignal(first.promise);
+  const editor = setup(() => {
+    const editor = createCodeMirror({ value: 'editable while loading' });
+    const extension = createMemo(async () => [language.of(await load())], { loadingValue: [] });
+    editor.createExtension(extension);
+    return editor;
+  });
+
+  editor.ref(parent);
+  flush();
+  const view = editor.editorView()!;
+  expect(view.state.doc.toString()).toBe('editable while loading');
+  expect(view.state.facet(language)).toEqual([]);
+
+  first.resolve('first');
+  await expect.poll(() => view.state.facet(language)).toEqual(['first']);
+  setLoad(stale.promise);
+  flush();
+  expect(view.state.facet(language)).toEqual(['first']);
+
+  setLoad(last.promise);
+  flush();
+  last.resolve('last');
+  await expect.poll(() => view.state.facet(language)).toEqual(['last']);
+  stale.resolve('stale');
+  await stale.promise;
+  flush();
+  expect(view.state.facet(language)).toEqual(['last']);
 });

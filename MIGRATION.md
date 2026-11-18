@@ -3,6 +3,16 @@
 Upgrade to solid-codemirror 3.x when your app moves to Solid 2. For a Solid 1
 app, keep using solid-codemirror 2.x.
 
+| If you use… | In 2.x | In 3.x |
+| --- | --- | --- |
+| A basic editor | `createCodeMirror({ value, onValueChange })` and `<div ref={ref} />` | Same calls after upgrading the app to Solid 2. |
+| Extensions required at startup | Add them through `createExtension` after creating the editor. | Pass them in `createCodeMirror({ extensions })` so fields and plugins exist when the view becomes available. |
+| A reactive extension that returns `undefined` | The compartment keeps its previous extension. | The compartment clears. Return the previous extension explicitly if you want to keep it. |
+| Read-only and focus helpers | Read-only disables DOM editing. Some apps add a read-only facet and a tab stop. | The helper sets `EditorState.readOnly` and `EditorView.editable`, and keeps the editor keyboard focusable. `setFocused(false)` blurs it. |
+| External text changes | Use `createEditorControlledValue`. Apps that suppress feedback do so in their callbacks. | The same helper still works. Pass `{ notify: false }` to suppress feedback, or tag a custom dispatch with `ExternalChange`. |
+| Multiple documents in one view | Swap native state and restore shared configuration yourself. | Use `setEditorState` to swap state and preserve the current view configuration. |
+| Lazy extensions | Resolve a promise with `createLazyCompartmentExtension`, or read an async resource and supply its extension. | The lazy helper still works for a one-time load. Use a Solid 2 async accessor for an extension that changes with reactive inputs. |
+
 ## 1. Upgrade Solid and install the peers
 
 After 3.x is available, install these versions in your app.
@@ -29,6 +39,13 @@ observe the accessor with Solid 2's `createEffect(editorView, callback)`.
 Move any fields or plugins that must exist at startup into
 `createCodeMirror({ extensions })`. Pass an accessor to `createExtension` for
 settings that change during editing.
+
+```diff
+- const { ref, createExtension } = createCodeMirror();
+- createExtension(requiredStateField);
++ const { ref, createExtension } = createCodeMirror({ extensions: requiredStateField });
+  createExtension(() => showNumbers() ? lineNumbers() : []);
+```
 
 ```tsx
 import { lineNumbers } from '@codemirror/view';
@@ -62,7 +79,14 @@ blurs the editor.
 ## 3. Separate initial text from external updates
 
 Treat `value` as the initial document. If a signal or prop should replace the
-text after mount, connect it through `createEditorControlledValue`.
+text after mount, connect it through `createEditorControlledValue`. If you
+already use the helper, add the third argument only where external updates
+should skip the save callback.
+
+```diff
+- createEditorControlledValue(editorView, () => props.text);
++ createEditorControlledValue(editorView, () => props.text, { notify: false });
+```
 
 ```tsx
 import { createCodeMirror, createEditorControlledValue } from 'solid-codemirror';
@@ -98,6 +122,13 @@ Use `setEditorState` to swap states and save the returned state under the
 outgoing tab. The outgoing state contains its text, selection, undo history,
 and custom fields. The incoming state receives the view's current
 configuration and managed compartments.
+
+```diff
+- const previous = view.state;
+- view.setState(nextState);
+- // Reinstall shared extensions and listeners here.
++ const previous = setEditorState(nextState);
+```
 
 ```tsx
 import { EditorState } from '@codemirror/state';
@@ -138,6 +169,50 @@ Include CodeMirror's `history()` extension in your startup configuration if
 you want per-tab undo. A tab switch does not trigger `onValueChange`. Use normal
 transactions for edits within the active tab.
 
+## 5. Load extensions asynchronously
+
+For an extension that follows a changing input, replace a Solid 1 resource
+with a Solid 2 async memo. This is useful for a language that loads on demand.
+
+```diff
+- import { createResource } from 'solid-js';
+- const [language] = createResource(() => props.language, props.loadLanguage);
+- createExtension(() => language() ?? []);
++ import { createMemo } from 'solid-js';
++ const language = createMemo(() => props.loadLanguage(props.language), { loadingValue: [] });
++ createExtension(language);
+```
+
+```tsx
+import { createMemo } from 'solid-js';
+import { createCodeMirror } from 'solid-codemirror';
+import type { Extension } from '@codemirror/state';
+
+function AsyncLanguageEditor(props: {
+  language: string;
+  loadLanguage: (language: string) => Promise<Extension>;
+}) {
+  const { ref, createExtension } = createCodeMirror();
+  const language = createMemo<Extension>(() => props.loadLanguage(props.language), {
+    loadingValue: [],
+  });
+
+  createExtension(language);
+  return <div ref={ref} />;
+}
+```
+
+With `loadingValue: []`, the editor is usable before the first extension loads.
+On later requests, Solid keeps the previous extension until the current
+request resolves. Solid discards superseded results. The compartment always
+receives an `Extension`, so wrap a promise-returning loader in the async memo
+before passing it to `createExtension`. Keep startup `extensions` synchronous.
+
+For a one-time import, keep using `createLazyCompartmentExtension(load, editorView)`.
+It runs the promise loader once and exposes `loading`. Use the async memo when
+a change such as switching languages must start another load. See the
+[Solid 2 memo reference][solid-memo].
+
 ## Verify your migration
 
 Run `pnpm dev` in the solid-codemirror repository to try the playground. Type
@@ -146,3 +221,4 @@ the text, cursor, theme, and undo. Apply an external update and check that
 the save count stays the same. Then run Format and undo it in one step.
 
 [solid-migration]: https://docs.solidjs.com/migration/from-solid-1/
+[solid-memo]: https://docs.solidjs.com/reference/solid-js/reactivity/create-memo/

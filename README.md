@@ -274,6 +274,9 @@ function App() {
 }
 ```
 
+For a language or extension that reloads when a reactive input changes, use a
+[Solid 2 async accessor](./MIGRATION.md#5-load-extensions-asynchronously).
+
 ## Development
 
 Use Node.js 24 and the pnpm version pinned in `package.json`.
