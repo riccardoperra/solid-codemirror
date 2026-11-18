@@ -54,7 +54,7 @@ export default defineConfig({
 | 2.3.x            | ^6.6.0            | ^6.40.0          | ^1.7.0   |
 
 For a Solid 2 app built with Vite, use `@solidjs/web` and `@solidjs/vite-plugin`.
-See the [Solid 2 migration guide](https://docs.solidjs.com/migration/from-solid-1/).
+Follow the [migration guide](./MIGRATION.md) to update an existing editor from solid-codemirror 2.x.
 
 ## Basic Usage
 
@@ -95,7 +95,7 @@ following properties:
 | Property          | Description                                                                                                                                                                                      |
 |-------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `ref`             | The HTMLElement object which will be attached to the EditorView instance                                                                                                                         |
-| `editorView`      | The current EditorView instance of CodeMirror. Will be `null` as default, and it will be valued when the given `ref` is mounted in the DOM                                                       |
+| `editorView`      | The current CodeMirror view. Returns `undefined` until a host is assigned and Solid flushes the update.                                                       |
 | `createExtension` | A function to create a new extension for CodeMirror using compartments. It's a shortand for the `createCompartmentExtension` helper which automatically attaches the right `EditorView` instance |
 
 Pass `extensions` to `createCodeMirror` for state fields, plugins, and other extensions

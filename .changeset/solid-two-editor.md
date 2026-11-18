@@ -9,3 +9,5 @@ Set `createCodeMirror({ extensions })` to install state fields, plugins, and oth
 Reactive compartments can be configured before mount and cleared with `undefined`. Read-only editors remain keyboard focusable and report their read-only state to CodeMirror commands.
 
 Use `setEditorState` to switch between document states while retaining the view's current configuration. Tag programmatic transactions with `ExternalChange` to skip `onValueChange`, or use `createEditorControlledValue` with `{ notify: false }`.
+
+See the [migration guide](./MIGRATION.md) for upgrade steps and examples.
