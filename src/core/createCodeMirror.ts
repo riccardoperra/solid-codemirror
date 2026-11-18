@@ -1,10 +1,12 @@
-import { EditorState } from '@codemirror/state';
+import { Compartment, EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { createEffect, createSignal } from 'solid-js';
 import {
   createCompartmentExtension,
   type CompartmentReconfigurationCallback,
 } from './createCompartmentExtension';
+import { ExternalChange } from './externalChange';
+import { applyViewConfiguration, viewExtension } from './viewConfiguration';
 import type { Extension, Transaction } from '@codemirror/state';
 import type { ViewUpdate } from '@codemirror/view';
 import type { Accessor, Setter } from 'solid-js';
@@ -26,10 +28,13 @@ export interface CreateCodeMirrorProps {
 export function createCodeMirror(props?: CreateCodeMirrorProps): {
   readonly editorView: Accessor<EditorView | undefined>;
   readonly ref: Setter<HTMLElement | undefined>;
+  /** Switches documents and returns the previous state if a view is mounted. */
+  readonly setEditorState: (state: EditorState) => EditorState | undefined;
   readonly createExtension: (
     extension: Extension | Accessor<Extension | undefined>,
   ) => CompartmentReconfigurationCallback;
 } {
+  const configuration = new Compartment();
   const [host, setHost] = createSignal<HTMLElement>();
   const [editorView, setEditorView] = createSignal<EditorView>();
 
@@ -40,17 +45,21 @@ export function createCodeMirror(props?: CreateCodeMirrorProps): {
       parent,
       state: EditorState.create({
         doc: props?.value,
-        extensions: [
+        extensions: viewExtension(configuration, [
           EditorView.updateListener.of((update) => props?.onModelViewUpdate?.(update)),
           props?.extensions ?? [],
-        ],
+        ]),
       }),
       dispatchTransactions(transactions, view) {
         for (const transaction of transactions) {
           props?.onTransactionDispatched?.(transaction, view);
         }
         view.update(transactions);
-        if (transactions.some((transaction) => transaction.docChanged)) {
+        if (
+          transactions.some(
+            (transaction) => transaction.docChanged && !transaction.annotation(ExternalChange),
+          )
+        ) {
           props?.onValueChange?.(view.state.doc.toString());
         }
       },
@@ -67,5 +76,13 @@ export function createCodeMirror(props?: CreateCodeMirrorProps): {
     return createCompartmentExtension(extension, editorView);
   }
 
-  return { editorView, ref: setHost, createExtension } as const;
+  function setEditorState(state: EditorState): EditorState | undefined {
+    const view = editorView();
+    if (!view) return;
+    const previous = view.state;
+    if (state !== previous) view.setState(applyViewConfiguration(previous, state));
+    return previous;
+  }
+
+  return { editorView, ref: setHost, createExtension, setEditorState } as const;
 }

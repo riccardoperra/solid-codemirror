@@ -52,6 +52,7 @@
   "devDependencies": {
     "@changesets/changelog-git": "^1.0.0",
     "@changesets/cli": "^3.0.3",
+    "@codemirror/commands": "^6.11.1",
     "@codemirror/state": "^6.7.6",
     "@codemirror/view": "^6.43.15",
     "@types/node": "^24.19.2",

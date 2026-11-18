@@ -1,5 +1,6 @@
 import { Compartment, StateEffect } from '@codemirror/state';
 import { createEffect } from 'solid-js';
+import { viewExtension } from './viewConfiguration';
 import type { Extension } from '@codemirror/state';
 import type { EditorView } from '@codemirror/view';
 import type { Accessor } from 'solid-js';
@@ -35,7 +36,7 @@ export function createCompartmentExtension(
     view.dispatch({
       effects:
         installed === undefined
-          ? StateEffect.appendConfig.of(compartment.of(extension))
+          ? StateEffect.appendConfig.of(viewExtension(compartment, extension))
           : compartment.reconfigure(extension),
     });
   }

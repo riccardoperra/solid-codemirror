@@ -1,8 +1,10 @@
+import { history, isolateHistory, undo } from '@codemirror/commands';
 import { Facet, StateField, EditorState } from '@codemirror/state';
 import { EditorView } from '@codemirror/view';
 import { createRoot, createSignal, flush } from 'solid-js';
 import { afterEach, expect, test, vi } from 'vitest';
 import {
+  ExternalChange,
   createCodeMirror,
   createEditorControlledValue,
   createEditorFocus,
@@ -199,4 +201,123 @@ test('ignores a lazy load that resolves after its owner is disposed', async () =
   await extension.promise;
   flush();
   expect(editor.editorView()!.state.facet(facet)).toEqual([]);
+});
+
+test('switching documents keeps the current configuration and update listener', () => {
+  const parent = host();
+  const theme = Facet.define<string>();
+  const [dark, setDark] = createSignal(false);
+  const updates = vi.fn();
+  const changes = vi.fn();
+  const editor = setup(() => {
+    const editor = createCodeMirror({
+      value: 'first',
+      onModelViewUpdate: updates,
+      onValueChange: changes,
+    });
+    editor.createExtension(() => theme.of(dark() ? 'dark' : 'light'));
+    return editor;
+  });
+  editor.ref(parent);
+  flush();
+  const view = editor.editorView()!;
+  view.dispatch({ changes: { from: 5, insert: ' edit' }, selection: { anchor: 3 } });
+  const first = view.state;
+
+  expect(editor.setEditorState(EditorState.create({ doc: 'second' }))).toBe(first);
+  expect(view.state.facet(theme)).toEqual(['light']);
+  updates.mockClear();
+  view.dispatch({ selection: { anchor: 1 } });
+  expect(updates).toHaveBeenCalledTimes(1);
+  setDark(true);
+  flush();
+  editor.setEditorState(first);
+
+  expect(view.state.doc.toString()).toBe('first edit');
+  expect(view.state.selection.main.anchor).toBe(3);
+  expect(view.state.facet(theme)).toEqual(['dark']);
+  expect(changes.mock.calls).toEqual([['first edit']]);
+  updates.mockClear();
+  view.dispatch({ changes: { from: 0, insert: '?' } });
+  expect(updates).toHaveBeenCalledTimes(1);
+  expect(changes.mock.calls).toEqual([['first edit'], ['?first edit']]);
+});
+
+test('reports external changes to observers without echoing them to onValueChange', () => {
+  const parent = host();
+  const [code, setCode] = createSignal('initial');
+  const before = vi.fn();
+  const updates = vi.fn();
+  const changes = vi.fn();
+  const editor = setup(() => {
+    const editor = createCodeMirror({
+      value: 'initial',
+      onTransactionDispatched: before,
+      onModelViewUpdate: updates,
+      onValueChange: changes,
+    });
+    createEditorControlledValue(editor.editorView, code, { notify: false });
+    return editor;
+  });
+  editor.ref(parent);
+  flush();
+
+  const view = editor.editorView()!;
+  setCode('external');
+  flush();
+  expect(view.state.doc.toString()).toBe('external');
+  expect(before).toHaveBeenCalledTimes(1);
+  expect(updates).toHaveBeenCalledTimes(1);
+  expect(changes).not.toHaveBeenCalled();
+
+  const incoming = view.state.update({
+    changes: { from: 0, to: 8, insert: 'formatted' },
+    annotations: ExternalChange.of(true),
+  });
+  const edit = incoming.state.update({ changes: { from: 9, insert: '!' } });
+  view.dispatch([incoming, edit]);
+  expect(changes.mock.calls).toEqual([['formatted!']]);
+});
+
+test('keeps undo history per document and records formatting as one step', () => {
+  const parent = host();
+  const changes = vi.fn();
+  const editor = setup(() =>
+    createCodeMirror({
+      value: 'first  ',
+      extensions: history(),
+      onValueChange: changes,
+    }),
+  );
+  editor.ref(parent);
+  flush();
+  const view = editor.editorView()!;
+  view.dispatch({ changes: { from: 0, insert: 'A ' } });
+
+  const first = editor.setEditorState(EditorState.create({ doc: 'second' }))!;
+  expect(undo(view)).toBe(false);
+  view.dispatch({ changes: { from: 0, insert: 'B ' } });
+  const second = editor.setEditorState(first)!;
+  expect(view.state.doc.toString()).toBe('A first  ');
+
+  view.dispatch({
+    changes: { from: 0, to: view.state.doc.length, insert: 'A first' },
+    annotations: isolateHistory.of('full'),
+  });
+  expect(undo(view)).toBe(true);
+  expect(view.state.doc.toString()).toBe('A first  ');
+  expect(undo(view)).toBe(true);
+  expect(view.state.doc.toString()).toBe('first  ');
+
+  editor.setEditorState(second);
+  expect(undo(view)).toBe(true);
+  expect(view.state.doc.toString()).toBe('second');
+  expect(changes.mock.calls.flat()).toEqual([
+    'A first  ',
+    'B second',
+    'A first',
+    'A first  ',
+    'first  ',
+    'second',
+  ]);
 });

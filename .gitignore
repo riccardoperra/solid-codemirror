@@ -25,5 +25,7 @@ gitignore
 Thumbs.db
 
 coverage
+.vitest/
+
 
 .pnpm-store

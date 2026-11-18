@@ -106,6 +106,14 @@ for configuration that changes after setup.
 external text changes. If the document and extension state need to change together,
 dispatch a single CodeMirror transaction with both `changes` and `effects`.
 
+### Switch documents in one editor
+
+Keep an `EditorState` for each document and call `setEditorState(nextState)` when
+the active document changes. The method returns the outgoing state so you can
+store its document, selection, history, and custom state fields. It applies the
+view's current extensions and managed compartments to the incoming state
+before displaying it. A state swap does not emit `onValueChange`.
+
 ## Modularity
 
 > https://codemirror.net/docs/guide/ \
@@ -181,6 +189,13 @@ function App() {
   return <div ref={ref} />
 }
 ```
+
+Pass `{ notify: false }` as the third argument to apply external values without
+echoing them through `onValueChange`. To tag a custom transaction, add
+`ExternalChange.of(true)` to its annotations. Transaction and view observers
+still receive the update. A batch containing any untagged document change emits
+its final document once. Undo history is configured separately through
+CodeMirror's `Transaction.addToHistory` annotation.
 
 ### Handle custom extensions
 
@@ -270,7 +285,12 @@ pnpm check
 pnpm dev
 ```
 
-The demo consumes the built package. Run `pnpm build` after changing library code.
+The playground consumes the built package. Run `pnpm build` after changing library code.
+
+Type in tab A, move the cursor, then open B and change the theme. Return to A to
+see your text and cursor under the new theme. Undo to check that A kept its
+history. An external update appears in the event log without incrementing the
+save counter. Format trims trailing whitespace as one undoable edit.
 
 ## Author
 
