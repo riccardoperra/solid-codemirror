@@ -81,11 +81,12 @@ stay active, keep returning that extension until its replacement is ready. A
 manual reconfiguration applies immediately to a mounted view and lasts until
 the accessor returns a different extension.
 
-`createEditorReadonly` now disables DOM editing and informs CodeMirror's editing
-commands that the document is read-only. The editor remains keyboard focusable.
-If you added a read-only facet and a tab stop solely for that behavior, remove
-those extensions. The `setFocused(false)` callback from `createEditorFocus` now
-blurs the editor.
+`createEditorReadonly` now combines `EditorState.readOnly`, non-editable DOM,
+and a keyboard tab stop. If you added a read-only facet and a tab stop solely
+for that behavior, remove those extensions. To control only the document's
+read-only state or only the DOM's editability, pass the corresponding CodeMirror
+facet to `createExtension`. See [the read-only examples](./README.md#update-editor-readonly-state).
+The `setFocused(false)` callback from `createEditorFocus` now blurs the editor.
 
 ## 3. Separate initial text from external updates
 

@@ -130,21 +130,45 @@ setFocused(false);
 
 ### Update editor readonly state
 
-Pass a boolean accessor to `createEditorReadonly` to control read-only mode.
-The editor stays keyboard focusable. Programmatic transactions can still update it.
+`createEditorReadonly` is a shortcut for a read-only editor that stays keyboard
+focusable. It sets `EditorState.readOnly` to `true`, sets `EditorView.editable`
+to `false`, and adds `tabindex="0"` to the editor content. With the search
+keymap installed, the focused editor can still handle `Cmd/Ctrl+F`.
+Programmatic transactions can still update the document.
 
-```typescript jsx
+```tsx
 import { createCodeMirror, createEditorReadonly } from 'solid-codemirror';
-import { createSignal } from 'solid-js';
 
-function App() {
+function App(props: { readOnly: boolean }) {
   const { ref, editorView } = createCodeMirror();
-  const [readOnly, setReadOnly] = createSignal(true);
-  createEditorReadonly(editorView, readOnly);
-
-  return <div ref={ref} />
+  createEditorReadonly(editorView, () => props.readOnly);
+  return <div ref={ref} />;
 }
 ```
+
+To control the two settings independently, pass CodeMirror's facets directly
+to `createExtension`.
+
+- `EditorState.readOnly` tells CodeMirror's editing commands whether the
+  document can be changed by the user. Use it alone to keep the default DOM
+  behavior and focus.
+- `EditorView.editable` controls the DOM's `contenteditable` setting.
+  Use `EditorView.editable.of(false)` to turn off DOM editing. To keep the
+  content reachable by keyboard, also add
+  `EditorView.contentAttributes.of({ tabindex: '0' })`.
+
+```tsx
+import { EditorState } from '@codemirror/state';
+import { createCodeMirror } from 'solid-codemirror';
+
+function App(props: { readOnly: boolean }) {
+  const { ref, createExtension } = createCodeMirror();
+  createExtension(() => EditorState.readOnly.of(props.readOnly));
+  return <div ref={ref} />;
+}
+```
+
+[CodeMirror read-only editor example](https://codemirror.net/examples/readonly/)
 
 ### Control editor code using signals
 
